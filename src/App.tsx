@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, FormEvent } from 'react';
 import { motion, AnimatePresence, useInView, useSpring, useTransform, useScroll } from 'motion/react';
-import { Star, CheckCircle2, Building2, Leaf, Snowflake, Wrench, ArrowRight, Menu, PhoneCall, MessageCircle, X, ChevronDown, MapPin, Calculator, Quote, Plus, Minus, Check, Briefcase, Send } from 'lucide-react';
+import { Star, CheckCircle2, Building2, Leaf, Snowflake, Wrench, ArrowRight, Menu, PhoneCall, MessageCircle, X, ChevronDown, MapPin, Calculator, Quote, Plus, Minus, Check, Briefcase, Send, Mail } from 'lucide-react';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -63,6 +63,7 @@ function Home() {
   const [chatInput, setChatInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const [isContactPopupOpen, setIsContactPopupOpen] = useState(false);
 
   const [sqm, setSqm] = useState<number>(500);
   const [calcService, setCalcService] = useState<string>('reinigung');
@@ -78,7 +79,7 @@ function Home() {
     setCheckedItems(prev => prev.includes(index) ? prev.filter(i => i !== index) : [...prev, index]);
   };
 
-  const handleSendMessage = (e: React.FormEvent) => {
+  const handleSendMessage = (e: FormEvent) => {
     e.preventDefault();
     if (!chatInput.trim()) return;
 
@@ -205,7 +206,7 @@ function Home() {
             transition={{ duration: 0.5, delay: 0.4 }}
             className="flex flex-col sm:flex-row items-center gap-4 mb-16"
           >
-            <button className="w-full sm:w-auto px-8 py-4 bg-primary-600 hover:bg-primary-700 text-white rounded-full font-medium transition-all hover:shadow-xl hover:shadow-primary-600/20 hover:-translate-y-0.5 flex items-center justify-center gap-2">
+            <button onClick={() => setIsContactPopupOpen(true)} className="w-full sm:w-auto px-8 py-4 bg-primary-600 hover:bg-primary-700 text-white rounded-full font-medium transition-all hover:shadow-xl hover:shadow-primary-600/20 hover:-translate-y-0.5 flex items-center justify-center gap-2">
               Jetzt Angebot einholen
               <ArrowRight className="w-4 h-4" />
             </button>
@@ -501,7 +502,7 @@ function Home() {
                   {calculatePrice()} <span className="text-2xl font-sans font-normal text-primary-200">€ / Monat</span>
                 </div>
                 <p className="text-sm text-primary-200 mb-8 relative z-10">*Dies ist ein unverbindlicher Richtwert basierend auf Durchschnittspreisen.</p>
-                <button className="w-full px-6 py-4 bg-white text-primary-900 hover:bg-slate-50 rounded-full font-bold transition-all hover:shadow-lg relative z-10">
+                <button onClick={() => setIsContactPopupOpen(true)} className="w-full px-6 py-4 bg-white text-slate-900 hover:bg-slate-50 rounded-full font-bold transition-all hover:shadow-lg relative z-10">
                   Exaktes Angebot anfordern
                 </button>
               </div>
@@ -544,7 +545,7 @@ function Home() {
       </section>
 
       {/* FAQ & Map Section */}
-      <section className="py-24 bg-slate-50 px-4 sm:px-6 lg:px-8 border-t border-slate-100">
+      <section id="faq" className="py-24 bg-slate-50 px-4 sm:px-6 lg:px-8 border-t border-slate-100">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16">
           {/* FAQ */}
           <div>
@@ -618,7 +619,7 @@ function Home() {
       </section>
 
       {/* Karriere Section */}
-      <section className="py-24 bg-white px-4 sm:px-6 lg:px-8">
+      <section id="karriere" className="py-24 bg-white px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-16">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-slate-200 shadow-sm mb-6">
@@ -685,7 +686,7 @@ function Home() {
             <p className="text-primary-50 text-lg md:text-xl mb-10 font-medium">
               Kontaktieren Sie uns für ein unverbindliches Erstgespräch vor Ort. Wir erstellen ein Konzept, das genau zu Ihren Anforderungen passt.
             </p>
-            <button className="px-8 py-4 bg-white text-primary-900 hover:bg-slate-50 rounded-full font-bold text-lg transition-all hover:shadow-[0_0_40px_rgba(255,255,255,0.3)] hover:-translate-y-1 flex items-center gap-2 mx-auto">
+            <button onClick={() => setIsContactPopupOpen(true)} className="px-8 py-4 bg-white text-primary-900 hover:bg-slate-50 rounded-full font-bold text-lg transition-all hover:shadow-[0_0_40px_rgba(255,255,255,0.3)] hover:-translate-y-1 flex items-center gap-2 mx-auto">
               <PhoneCall className="w-5 h-5" />
               Jetzt Kontakt aufnehmen
             </button>
@@ -776,6 +777,61 @@ function Home() {
           {isChatOpen ? <X className="w-6 h-6" /> : <MessageCircle className="w-6 h-6" />}
         </button>
       </div>
+
+      {/* Contact Popup */}
+      <AnimatePresence>
+        {isContactPopupOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center px-4">
+            <motion.div 
+              initial={{ opacity: 0 }} 
+              animate={{ opacity: 1 }} 
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
+              onClick={() => setIsContactPopupOpen(false)}
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="bg-white rounded-3xl shadow-2xl p-6 md:p-8 max-w-md w-full relative z-10"
+            >
+              <button onClick={() => setIsContactPopupOpen(false)} className="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+                <X className="w-6 h-6" />
+              </button>
+              <h3 className="text-2xl font-serif text-slate-900 mb-6 text-center">Wie möchten Sie uns kontaktieren?</h3>
+              <div className="flex flex-col gap-3">
+                <a href="tel:01629570163" className="flex items-center gap-4 p-4 rounded-2xl border border-slate-200 hover:border-primary-500 hover:bg-primary-50 transition-all group">
+                  <div className="w-12 h-12 bg-primary-100 text-primary-600 rounded-full flex items-center justify-center group-hover:bg-primary-600 group-hover:text-white transition-colors">
+                    <PhoneCall className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="font-bold text-slate-900">Anrufen</p>
+                    <p className="text-sm text-slate-500">0162 9570163</p>
+                  </div>
+                </a>
+                <a href="mailto:david.swain91@googlemail.com" className="flex items-center gap-4 p-4 rounded-2xl border border-slate-200 hover:border-primary-500 hover:bg-primary-50 transition-all group">
+                  <div className="w-12 h-12 bg-primary-100 text-primary-600 rounded-full flex items-center justify-center group-hover:bg-primary-600 group-hover:text-white transition-colors">
+                    <Mail className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="font-bold text-slate-900">E-Mail schreiben</p>
+                    <p className="text-sm text-slate-500">david.swain91@googlemail.com</p>
+                  </div>
+                </a>
+                <a href="https://wa.me/491629570163" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 p-4 rounded-2xl border border-slate-200 hover:border-green-500 hover:bg-green-50 transition-all group">
+                  <div className="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center group-hover:bg-green-500 group-hover:text-white transition-colors">
+                    <MessageCircle className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="font-bold text-slate-900">WhatsApp</p>
+                    <p className="text-sm text-slate-500">Direkt im Chat klären</p>
+                  </div>
+                </a>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

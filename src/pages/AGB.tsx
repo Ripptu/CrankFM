@@ -1,20 +1,28 @@
+import { ArrowLeft } from 'lucide-react';
+import { Link } from 'react-router-dom';
+
 export default function AGB() {
   return (
-    <div className="min-h-screen bg-white pt-32 pb-20 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl mx-auto">
-        <h1 className="text-4xl font-serif text-slate-900 mb-8">Allgemeine Geschäftsbedingungen (AGB)</h1>
-        <div className="prose prose-slate max-w-none">
-          <h2>1. Geltungsbereich</h2>
-          <p>Für die Geschäftsbeziehung zwischen Crank Facility Management (nachfolgend „Anbieter“) und dem Kunden (nachfolgend „Kunde“) gelten ausschließlich die nachfolgenden Allgemeinen Geschäftsbedingungen in ihrer zum Zeitpunkt der Bestellung gültigen Fassung.</p>
-          
-          <h2>2. Vertragsgegenstand</h2>
-          <p>Gegenstand des Vertrages ist die Erbringung von Dienstleistungen im Bereich Facility Management, insbesondere Gebäudereinigung, Gartenpflege und Winterdienst.</p>
-          
-          <h2>3. Vertragsschluss</h2>
-          <p>Die Angebote des Anbieters sind freibleibend und unverbindlich. Ein Vertrag kommt erst durch die schriftliche Auftragsbestätigung des Anbieters zustande.</p>
-          
-          <h2>4. Preise und Zahlungsbedingungen</h2>
-          <p>Sofern nichts anderes vereinbart ist, gelten die Preise gemäß der zum Zeitpunkt des Vertragsschlusses gültigen Preisliste des Anbieters. Alle Preise verstehen sich zuzüglich der gesetzlichen Mehrwertsteuer.</p>
+    <div className="min-h-screen bg-slate-50 pt-32 pb-20 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-3xl mx-auto bg-white p-8 md:p-12 rounded-3xl shadow-sm border border-slate-100">
+        <Link to="/" className="inline-flex items-center gap-2 text-primary-600 hover:text-primary-700 font-medium mb-8 transition-colors">
+          <ArrowLeft className="w-4 h-4" />
+          Zurück zur Startseite
+        </Link>
+        
+        <h1 className="text-4xl font-serif text-slate-900 mb-8">Allgemeine Geschäftsbedingungen</h1>
+        
+        <div className="prose prose-slate max-w-none text-slate-600 space-y-6">
+          <p>
+            Die Allgemeinen Geschäftsbedingungen (AGB) von Crank Facility Management befinden sich derzeit in der Überarbeitung und werden in Kürze hier zur Verfügung gestellt.
+          </p>
+          <p>
+            Für aktuelle Anfragen zu unseren Vertragsbedingungen kontaktieren Sie uns bitte direkt unter:
+          </p>
+          <ul className="list-none pl-0">
+            <li>Telefon: 01629570163</li>
+            <li>E-Mail: <a href="mailto:info@crank-facility-management.de" className="text-primary-600 hover:underline">info@crank-facility-management.de</a></li>
+          </ul>
         </div>
       </div>
     </div>

@@ -8,7 +8,10 @@ export default function Footer() {
         <div className="flex items-center gap-2">
           <img src="https://s1.directupload.eu/images/260224/kgemdfqa.png" alt="Crank Facility Management" className="h-8 object-contain grayscale opacity-70" />
         </div>
-        <div className="flex gap-6 text-sm text-slate-500">
+        <div className="flex flex-wrap justify-center gap-6 text-sm text-slate-500">
+          <Link to="/standorte/wolfratshausen" className="hover:text-primary-600 transition-colors">Wolfratshausen</Link>
+          <Link to="/standorte/bad-toelz" className="hover:text-primary-600 transition-colors">Bad Tölz</Link>
+          <Link to="/standorte/muenchen-sued" className="hover:text-primary-600 transition-colors">München Süd</Link>
           <Link to="/impressum" className="hover:text-primary-600 transition-colors">Impressum</Link>
           <Link to="/datenschutz" className="hover:text-primary-600 transition-colors">Datenschutz</Link>
           <Link to="/agb" className="hover:text-primary-600 transition-colors">AGB</Link>

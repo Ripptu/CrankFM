@@ -3,15 +3,20 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useEffect, useRef, FormEvent } from 'react';
+import { useState, useEffect, useRef, FormEvent, Suspense, lazy } from 'react';
 import { motion, AnimatePresence, useInView, useSpring, useTransform, useScroll } from 'motion/react';
 import { Star, CheckCircle2, Building2, Leaf, Snowflake, Wrench, ArrowRight, Menu, PhoneCall, MessageCircle, X, ChevronDown, MapPin, Calculator, Quote, Plus, Minus, Check, Briefcase, Send, Mail } from 'lucide-react';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import Impressum from './pages/Impressum';
-import Datenschutz from './pages/Datenschutz';
-import AGB from './pages/AGB';
+import SEO from './components/SEO';
+
+const Impressum = lazy(() => import('./pages/Impressum'));
+const Datenschutz = lazy(() => import('./pages/Datenschutz'));
+const AGB = lazy(() => import('./pages/AGB'));
+const LocationPage = lazy(() => import('./pages/LocationPage'));
+
+import { getChatResponse } from './services/geminiService';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -79,29 +84,24 @@ function Home() {
     setCheckedItems(prev => prev.includes(index) ? prev.filter(i => i !== index) : [...prev, index]);
   };
 
-  const handleSendMessage = (e: FormEvent) => {
+  const handleSendMessage = async (e: FormEvent) => {
     e.preventDefault();
     if (!chatInput.trim()) return;
 
     const userMsg = chatInput;
-    setChatMessages(prev => [...prev, { text: userMsg, sender: 'user' }]);
+    const newMessages = [...chatMessages, { text: userMsg, sender: 'user' as const }];
+    setChatMessages(newMessages);
     setChatInput("");
     setIsTyping(true);
 
-    // Simulate bot response
-    setTimeout(() => {
-      let botResponse = "Vielen Dank für Ihre Nachricht. Ein Mitarbeiter wird sich in Kürze bei Ihnen melden.";
-      if (userMsg.toLowerCase().includes("preis") || userMsg.toLowerCase().includes("kosten")) {
-        botResponse = "Unsere Preise hängen von der Fläche und dem gewünschten Service ab. Nutzen Sie gerne unseren Preisrechner auf der Seite!";
-      } else if (userMsg.toLowerCase().includes("job") || userMsg.toLowerCase().includes("karriere") || userMsg.toLowerCase().includes("bewerbung")) {
-        botResponse = "Wir suchen immer nach motivierten Mitarbeitern! Schauen Sie sich unsere offenen Stellen im Bereich 'Karriere' an.";
-      } else if (userMsg.toLowerCase().includes("kontakt") || userMsg.toLowerCase().includes("telefon")) {
-        botResponse = "Sie erreichen uns telefonisch unter +49 (0) 123 456789 oder per E-Mail an info@crank-fm.de.";
-      }
-
+    try {
+      const botResponse = await getChatResponse(userMsg, chatMessages);
       setChatMessages(prev => [...prev, { text: botResponse, sender: 'bot' }]);
+    } catch (error) {
+      setChatMessages(prev => [...prev, { text: "Entschuldigung, es gab einen Fehler. Bitte versuchen Sie es später noch einmal.", sender: 'bot' }]);
+    } finally {
       setIsTyping(false);
-    }, 1500);
+    }
   };
 
   useEffect(() => {
@@ -149,17 +149,54 @@ function Home() {
   ];
 
   const testimonials = [
-    { name: "Michael Schmidt", role: "Hausverwaltung Schmidt GmbH", text: "Seit wir zu Crank gewechselt sind, haben wir 30% weniger Beschwerden von Mietern. Der Service ist extrem zuverlässig und transparent.", rating: 5, image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=200&auto=format&fit=crop" },
-    { name: "Sarah Weber", role: "Office Managerin, TechCorp", text: "Die Kommunikation ist hervorragend. Egal ob Unterhaltsreinigung oder kurzfristige Reparaturen – das Team ist immer sofort zur Stelle.", rating: 5, image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=200&auto=format&fit=crop" },
-    { name: "Thomas Müller", role: "Eigentümergemeinschaft Parkallee", text: "Besonders der Winterdienst hat uns letzten Winter gerettet. Pünktlich, gründlich und absolut professionell. Sehr zu empfehlen!", rating: 5, image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=200&auto=format&fit=crop" }
+    { name: "Michael Schmidt", role: "Hausverwaltung Schmidt GmbH", text: "Seit wir zu Crank gewechselt sind, haben wir 30% weniger Beschwerden von Mietern. Der Service ist extrem zuverlässig und transparent.", rating: 5 },
+    { name: "Sarah Weber", role: "Office Managerin, TechCorp", text: "Die Kommunikation ist hervorragend. Egal ob Unterhaltsreinigung oder kurzfristige Reparaturen – das Team ist immer sofort zur Stelle.", rating: 5 },
+    { name: "Thomas Müller", role: "Eigentümergemeinschaft Parkallee", text: "Besonders der Winterdienst hat uns letzten Winter gerettet. Pünktlich, gründlich und absolut professionell. Sehr zu empfehlen!", rating: 5 }
   ];
 
   return (
     <div className="min-h-screen bg-white font-sans text-slate-600 selection:bg-primary-100 selection:text-primary-900">
+      <SEO 
+        title="Gebäudereinigung & Hausmeisterservice Geretsried | Crank Facility Management"
+        description="Ihr zuverlässiger Partner für Gebäudereinigung, Hausmeisterservice und Winterdienst in Geretsried und Umgebung (+50km). Fordern Sie jetzt ein Angebot an!"
+      />
+      
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "LocalBusiness",
+          "name": "Crank Facility Management",
+          "image": "https://s1.directupload.eu/images/260224/kgemdfqa.png",
+          "@id": "https://crank-facility-management.de",
+          "url": "https://crank-facility-management.de",
+          "telephone": "01629570163",
+          "email": "info@crank-facility-management.de",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "Kirchplatz 10",
+            "addressLocality": "Geretsried",
+            "postalCode": "82538",
+            "addressCountry": "DE"
+          },
+          "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": 47.8667,
+            "longitude": 11.4833
+          },
+          "areaServed": [
+            "Geretsried",
+            "Wolfratshausen",
+            "Bad Tölz",
+            "München Süd"
+          ],
+          "priceRange": "€€"
+        })}
+      </script>
+
       <Navbar />
 
       {/* Hero Section */}
-      <section className="relative pt-48 pb-32 w-full flex flex-col items-center text-center min-h-[90vh] justify-center overflow-hidden">
+      <section className="relative pt-24 sm:pt-48 pb-20 sm:pb-32 w-full flex flex-col items-center text-center min-h-[90vh] justify-center overflow-hidden">
         {/* Background Image with Parallax */}
         <motion.div style={{ y: heroY, opacity: heroOpacity }} className="absolute inset-0 z-0">
           <img 
@@ -171,22 +208,22 @@ function Home() {
         {/* Gradient Overlay for soft transition to white */}
         <div className="absolute inset-0 z-10 bg-gradient-to-b from-transparent via-white/40 to-white"></div>
         
-        <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto flex flex-col items-center relative z-20">
+        <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto flex flex-col items-center relative z-20 w-full">
           <motion.div 
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-sm border border-slate-200/50 shadow-sm mb-8"
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-sm border border-slate-200/50 shadow-sm mb-6 sm:mb-8"
           >
             <Star className="w-3.5 h-3.5 text-primary-600 fill-primary-600" />
-            <span className="text-xs font-semibold tracking-wide text-slate-700 uppercase">Ihr Premium Partner</span>
+            <span className="text-[10px] sm:text-xs font-semibold tracking-wide text-slate-700 uppercase">Ihr Premium Partner</span>
           </motion.div>
 
           <motion.h1 
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-5xl md:text-7xl font-serif text-slate-900 max-w-4xl tracking-tight leading-[1.1] mb-6 drop-shadow-sm"
+            className="text-4xl sm:text-5xl md:text-7xl font-serif text-slate-900 max-w-4xl tracking-tight leading-[1.15] sm:leading-[1.1] mb-4 sm:mb-6 drop-shadow-sm px-2"
           >
             Werterhalt und Pflege mit <span className="italic text-primary-600">höchstem</span> Standard.
           </motion.h1>
@@ -195,7 +232,7 @@ function Home() {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="text-lg md:text-xl text-slate-700 max-w-2xl mb-10 leading-relaxed font-medium"
+            className="text-base sm:text-lg md:text-xl text-slate-700 max-w-2xl mb-8 sm:mb-10 leading-relaxed font-medium px-4"
           >
             Die All-in-One Lösung für Ihr Gebäude. Von der Gebäudereinigung über Landschaftsbau bis zum Winterdienst – wir machen es Ihnen einfach.
           </motion.p>
@@ -204,24 +241,32 @@ function Home() {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.4 }}
-            className="flex flex-col sm:flex-row items-center gap-4 mb-16"
+            className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 mb-12 sm:mb-16 w-full sm:w-auto px-4 sm:px-0"
           >
-            <button onClick={() => setIsContactPopupOpen(true)} className="w-full sm:w-auto px-8 py-4 bg-primary-600 hover:bg-primary-700 text-white rounded-full font-medium transition-all hover:shadow-xl hover:shadow-primary-600/20 hover:-translate-y-0.5 flex items-center justify-center gap-2">
+            <button onClick={() => setIsContactPopupOpen(true)} className="w-full sm:w-auto px-6 py-4 bg-primary-600 hover:bg-primary-700 text-white rounded-full font-medium transition-all hover:shadow-xl hover:shadow-primary-600/20 hover:-translate-y-0.5 flex items-center justify-center gap-2 text-base">
               Jetzt Angebot einholen
               <ArrowRight className="w-4 h-4" />
             </button>
-            <button className="w-full sm:w-auto px-8 py-4 bg-white/90 backdrop-blur-sm hover:bg-white text-slate-900 border border-slate-200/50 rounded-full font-medium transition-all hover:shadow-md">
+            <button onClick={() => {
+              const element = document.getElementById('leistungen');
+              if (element) {
+                const offset = 100;
+                const elementPosition = element.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - offset;
+                window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+              }
+            }} className="w-full sm:w-auto px-6 py-4 bg-white/90 backdrop-blur-sm hover:bg-white text-slate-900 border border-slate-200/50 rounded-full font-medium transition-all hover:shadow-md text-base">
               Unsere Leistungen
             </button>
           </motion.div>
 
           {/* Floating Stats Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-2xl">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 w-full max-w-2xl px-4 sm:px-0">
             <motion.div 
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.6 }}
-              className="bg-white/80 backdrop-blur-md p-4 rounded-2xl shadow-xl flex items-center gap-4 border border-white/40"
+              className="bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-xl flex items-center gap-4 border border-white/40"
             >
               <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center shrink-0">
                 <CheckCircle2 className="w-6 h-6 text-green-600" />
@@ -232,30 +277,37 @@ function Home() {
               </div>
             </motion.div>
 
-            <motion.div 
+            <motion.a 
+              href="https://www.google.com/search?sa=X&sca_esv=40c75cf91d5573df&sxsrf=ANbL-n5hstJR3nb9lXCF4r_FNciyWTNfzQ:1772047772386&q=CranK-Facility-Management+Rezensionen&rflfq=1&num=20&stick=H4sIAAAAAAAAAONgkxIxNDA1NTYyNjY3NzExMTM1MDY2MtvAyPiKUdW5KDHPW9ctMTkzJ7OkUtc3MS8xPTU3Na9EISi1KjWvODM_LzVvEStx6gCeCAYuawAAAA&rldimm=10553233774446503326&tbm=lcl&hl=de-DE&ved=2ahUKEwi34f2vsPWSAxVAcfEDHb4SORIQ9fQKegQIRRAG&biw=1536&bih=729&dpr=1.25#lkt=LocalPoiReviews"
+              target="_blank"
+              rel="noopener noreferrer"
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.7 }}
-              className="bg-white/80 backdrop-blur-md p-4 rounded-2xl shadow-xl flex flex-col justify-center gap-1 border border-white/40"
+              className="bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-xl flex items-center justify-between gap-4 border border-white/40 hover:bg-white hover:scale-[1.02] transition-all cursor-pointer group"
             >
-              <div className="flex items-center gap-2">
-                <div className="flex gap-0.5">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                  ))}
+              <div className="flex flex-col gap-1 text-left">
+                <div className="flex items-center gap-2">
+                  <span className="text-xl font-bold text-slate-900 leading-none">4.9</span>
+                  <div className="flex gap-0.5">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+                    ))}
+                  </div>
                 </div>
-                <span className="text-sm font-bold text-slate-900">4.9/5</span>
+                <div className="flex items-center gap-1.5">
+                  <p className="text-sm font-medium text-slate-600">Google Rezensionen</p>
+                </div>
               </div>
-              <div className="flex items-center gap-1.5">
-                <svg className="w-4 h-4" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <div className="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center shrink-0 group-hover:bg-primary-50 transition-colors">
+                <svg className="w-5 h-5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
                   <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
                   <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
                   <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
                 </svg>
-                <p className="text-xs text-slate-600">Google Rezensionen</p>
               </div>
-            </motion.div>
+            </motion.a>
           </div>
         </div>
       </section>
@@ -387,69 +439,6 @@ function Home() {
         </div>
       </section>
 
-      {/* Trust Section */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-slate-200 shadow-sm mb-6">
-              <Star className="w-3.5 h-3.5 text-primary-600 fill-primary-600" />
-              <span className="text-xs font-semibold tracking-wide text-slate-700 uppercase">Warum Wir?</span>
-            </div>
-            <h2 className="text-4xl md:text-5xl font-serif text-slate-900 mb-6 leading-tight">
-              Ein Ansprechpartner für das <span className="italic text-primary-600">komplette</span> Objekt.
-            </h2>
-            <p className="text-lg text-slate-500 mb-8 leading-relaxed">
-              Sparen Sie sich die Koordination von 5 verschiedenen Dienstleistern. Wir bündeln alle Kompetenzen für Pflege, Werterhalt und Sicherheit in einem zentralen Service.
-            </p>
-            <ul className="space-y-4 mb-8">
-              {['Ein zentraler Ansprechpartner', 'Transparente Kostenstruktur', 'Zertifizierte Fachkräfte', '24/7 Notdienst verfügbar'].map((item, i) => (
-                <li key={i} className="flex items-center gap-3 text-slate-700 font-medium">
-                  <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center shrink-0">
-                    <CheckCircle2 className="w-4 h-4 text-green-600" />
-                  </div>
-                  {item}
-                </li>
-              ))}
-            </ul>
-            <button className="px-6 py-3 bg-white border-2 border-slate-200 hover:border-primary-600 hover:text-primary-600 text-slate-900 rounded-full font-medium transition-colors">
-              Mehr über uns erfahren
-            </button>
-          </div>
-          
-          <div className="relative">
-            <div className="aspect-square rounded-3xl overflow-hidden">
-              <img 
-                src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?q=80&w=2940&auto=format&fit=crop" 
-                alt="Professionelle Reinigung" 
-                className="w-full h-full object-cover"
-              />
-            </div>
-            
-            {/* Floating Dashboard Element */}
-            <motion.div 
-              initial={{ y: 20, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              viewport={{ once: true }}
-              className="absolute -bottom-8 -left-8 bg-white p-6 rounded-3xl shadow-[0_20px_40px_rgb(0,0,0,0.1)] border border-slate-100 max-w-xs hidden md:block"
-            >
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-sm font-bold text-slate-900">Effizienz-Score</span>
-                <span className="text-xs font-medium text-green-600 bg-green-50 px-2 py-1 rounded-full">+24%</span>
-              </div>
-              <div className="space-y-3">
-                <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
-                  <div className="h-full bg-primary-600 w-[85%] rounded-full"></div>
-                </div>
-                <div className="flex justify-between text-xs text-slate-500">
-                  <span>Zeit gespart</span>
-                  <span className="font-medium text-slate-900">12 Std/Monat</span>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
       {/* Calculator Section */}
       <section id="preise" className="py-24 bg-white px-4 sm:px-6 lg:px-8 border-t border-slate-100">
         <div className="max-w-7xl mx-auto">
@@ -520,6 +509,15 @@ function Home() {
               <span className="text-xs font-semibold tracking-wide text-slate-700 uppercase">Kundenstimmen</span>
             </div>
             <h2 className="text-4xl md:text-5xl font-serif text-slate-900 mb-4">Das sagen unsere <span className="italic text-primary-600">Kunden</span></h2>
+            <a href="https://share.google/LxjfNM24lN9BGlGjz" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-6 py-3 bg-white border border-slate-200 hover:border-primary-500 hover:bg-primary-50 rounded-full font-medium text-slate-700 transition-all shadow-sm">
+              <svg className="w-5 h-5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+              </svg>
+              Auf Google bewerten
+            </a>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -532,7 +530,6 @@ function Home() {
                 </div>
                 <p className="text-slate-700 mb-8 leading-relaxed">"{t.text}"</p>
                 <div className="flex items-center gap-4 mt-auto">
-                  <img src={t.image} alt={t.name} className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm" />
                   <div>
                     <h4 className="font-bold text-slate-900 text-sm">{t.name}</h4>
                     <p className="text-xs text-slate-500">{t.role}</p>
@@ -710,7 +707,7 @@ function Home() {
                 <div className="flex items-center gap-3">
                   <div className="relative">
                     <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center overflow-hidden">
-                      <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="Support" />
+                      <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="Support" loading="lazy" />
                     </div>
                     <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-slate-900 rounded-full"></div>
                   </div>
@@ -840,13 +837,16 @@ export default function App() {
   return (
     <>
       <ScrollToTop />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/impressum" element={<Impressum />} />
-        <Route path="/datenschutz" element={<Datenschutz />} />
-        <Route path="/agb" element={<AGB />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+      <Suspense fallback={<div className="min-h-screen bg-slate-50 flex items-center justify-center"><div className="w-8 h-8 border-4 border-primary-600 border-t-transparent rounded-full animate-spin"></div></div>}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/impressum" element={<Impressum />} />
+          <Route path="/datenschutz" element={<Datenschutz />} />
+          <Route path="/agb" element={<AGB />} />
+          <Route path="/standorte/:city" element={<LocationPage />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Suspense>
     </>
   );
 }

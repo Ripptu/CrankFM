@@ -16,7 +16,12 @@ export default function Footer() {
           <Link to="/datenschutz" className="hover:text-primary-600 transition-colors">Datenschutz</Link>
           <Link to="/agb" className="hover:text-primary-600 transition-colors">AGB</Link>
         </div>
-        <p className="text-sm text-slate-400">© 2025 Crank Facility Management. Alle Rechte vorbehalten.</p>
+        <div className="flex flex-col items-center md:items-end gap-2">
+          <p className="text-sm text-slate-400">© 2025 Crank Facility Management. Alle Rechte vorbehalten.</p>
+          <p className="text-xs text-slate-400">
+            Designed by <a href="http://vamela.info" target="_blank" rel="noopener noreferrer" className="text-primary-600 hover:text-primary-700 font-medium transition-colors">VAMELA</a>
+          </p>
+        </div>
       </div>
     </footer>
   );

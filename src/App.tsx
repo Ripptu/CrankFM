@@ -694,7 +694,7 @@ function Home() {
       <Footer />
 
       {/* Live Chat Widget */}
-      <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end">
+      <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end md:bottom-6 md:right-6 bottom-24 right-4">
         <AnimatePresence>
           {isChatOpen && (
             <motion.div 

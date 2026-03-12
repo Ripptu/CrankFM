@@ -44,7 +44,7 @@ export default function Navbar() {
         className="pointer-events-auto backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 hidden md:flex items-center justify-between gap-8"
       >
         <Link to="/" className="flex items-center gap-2 shrink-0">
-          <img src="https://s1.directupload.eu/images/260224/kgemdfqa.png" alt="Crank Facility Management" className="h-10 object-contain hidden md:block" />
+          <img src="https://s1.directupload.eu/images/260224/kgemdfqa.png" alt="Crank Facility Management" className="h-10 w-auto object-contain hidden md:block" width="150" height="40" loading="eager" fetchPriority="high" />
         </Link>
         
         <div className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600 whitespace-nowrap">

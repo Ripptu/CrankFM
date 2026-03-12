@@ -159,6 +159,8 @@ function Home() {
       <SEO 
         title="Gebäudereinigung & Hausmeisterservice Geretsried | Crank Facility Management"
         description="Ihr zuverlässiger Partner für Gebäudereinigung, Hausmeisterservice und Winterdienst in Geretsried und Umgebung (+50km). Fordern Sie jetzt ein Angebot an!"
+        keywords="Gebäudereinigung, Hausmeisterservice, Geretsried, Facility Management, Winterdienst, Gartenpflege"
+        url="/"
       />
       
       <script type="application/ld+json">
@@ -203,6 +205,8 @@ function Home() {
             src="https://i.postimg.cc/F9fHrYLH/hf-20260223-135452-f3c098df-7ba2-40bc-9ec6-1ae451a99f05.webp" 
             alt="Hintergrund" 
             className="w-full h-full object-cover object-top scale-110"
+            fetchPriority="high"
+            loading="eager"
           />
         </motion.div>
         {/* Gradient Overlay for soft transition to white */}

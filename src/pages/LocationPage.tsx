@@ -15,6 +15,8 @@ export default function LocationPage() {
       <SEO 
         title={`Gebäudereinigung & Hausmeisterservice in ${formattedCity} | Crank Facility Management`}
         description={`Ihr zuverlässiger Partner für Gebäudereinigung, Hausmeisterservice und Winterdienst in ${formattedCity}. Fordern Sie jetzt ein kostenloses Angebot an!`}
+        keywords={`Gebäudereinigung ${formattedCity}, Hausmeisterservice ${formattedCity}, Facility Management ${formattedCity}, Winterdienst ${formattedCity}, Gartenpflege ${formattedCity}`}
+        url={`/standorte/${city}`}
       />
       <Navbar />
       

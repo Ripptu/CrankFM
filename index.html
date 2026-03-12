@@ -1,9 +1,27 @@
 <!doctype html>
-<html lang="en">
+<html lang="de">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Crank Facility Management</title>
+    <title>Crank Facility Management | Gebäudereinigung & Hausmeisterservice in Geretsried</title>
+    <meta name="description" content="Ihr zuverlässiger Partner für Gebäudereinigung, Hausmeisterservice, Gartenpflege und Winterdienst in Geretsried, Wolfratshausen und Umgebung (50km). Kostenloses Angebot anfordern!" />
+    <meta name="keywords" content="Facility Management, Gebäudereinigung, Hausmeisterservice, Gartenbau, Winterdienst, Geretsried, Wolfratshausen, München Süd, Reinigungskraft, Hausmeister" />
+    <meta name="author" content="Crank Facility Management" />
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://crank-facility-management.de/" />
+    <meta property="og:title" content="Crank Facility Management | Ihr Partner vor Ort" />
+    <meta property="og:description" content="Professionelle Gebäudereinigung, Gartenpflege und Hausmeisterservice in Geretsried und Umgebung." />
+    <meta property="og:image" content="https://i.postimg.cc/F9fHrYLH/hf-20260223-135452-f3c098df-7ba2-40bc-9ec6-1ae451a99f05.webp" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="https://s1.directupload.eu/images/260224/kgemdfqa.png" />
+    <link rel="apple-touch-icon" href="https://s1.directupload.eu/images/260224/kgemdfqa.png" />
+
+    <!-- Preload Hero Image for Performance -->
+    <link rel="preload" as="image" href="https://i.postimg.cc/F9fHrYLH/hf-20260223-135452-f3c098df-7ba2-40bc-9ec6-1ae451a99f05.webp" />
+
     <script>
       // Prevent TypeError: Cannot set property fetch of #<Window> which has only a getter
       if (typeof window !== 'undefined' && window.fetch) {
@@ -17,9 +35,62 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+    
+    <!-- JSON-LD Structured Data for Local SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "Crank Facility Management",
+      "image": "https://s1.directupload.eu/images/260224/kgemdfqa.png",
+      "description": "Professionelle Gebäudereinigung, Hausmeisterservice, Gartenpflege und Winterdienst in Geretsried und Umgebung.",
+      "url": "https://crank-facility-management.de/",
+      "telephone": "01629570163",
+      "email": "david.swain91@googlemail.com",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Kirchplatz 10",
+        "addressLocality": "Geretsried-Gartenberg",
+        "postalCode": "82538",
+        "addressCountry": "DE"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 47.8667,
+        "longitude": 11.4833
+      },
+      "areaServed": {
+        "@type": "GeoCircle",
+        "geoMidpoint": {
+          "@type": "GeoCoordinates",
+          "latitude": 47.8667,
+          "longitude": 11.4833
+        },
+        "geoRadius": "50000"
+      },
+      "priceRange": "€€"
+    }
+    </script>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Static Fallback Content for SEO Crawlers (will be replaced by React) -->
+      <div style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0;">
+        <h1>Crank Facility Management - Gebäudereinigung & Hausmeisterservice in Geretsried</h1>
+        <p>Ihr zuverlässiger Partner für Gebäudereinigung, Hausmeisterservice, Gartenpflege und Winterdienst in Geretsried, Wolfratshausen und im Umkreis von 50km.</p>
+        <h2>Unsere Dienstleistungen</h2>
+        <ul>
+          <li>Unterhaltsreinigung & Gebäudereinigung</li>
+          <li>Garten- und Landschaftsbau</li>
+          <li>Winterdienst (24/7)</li>
+          <li>Hausmeisterdienste</li>
+        </ul>
+        <h2>Kontakt</h2>
+        <p>Telefon: 0162 9570163</p>
+        <p>E-Mail: david.swain91@googlemail.com</p>
+        <p>Adresse: Kirchplatz 10, 82538 Geretsried-Gartenberg</p>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

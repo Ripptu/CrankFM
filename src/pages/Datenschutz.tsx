@@ -1,9 +1,15 @@
 import { ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import SEO from '../components/SEO';
 
 export default function Datenschutz() {
   return (
     <div className="min-h-screen bg-slate-50 pt-32 pb-20 px-4 sm:px-6 lg:px-8">
+      <SEO 
+        title="Datenschutz | Crank Facility Management"
+        description="Datenschutzerklärung von Crank Facility Management. Informationen zum Umgang mit Ihren Daten."
+        url="/datenschutz"
+      />
       <div className="max-w-4xl mx-auto bg-white p-8 md:p-12 rounded-3xl shadow-sm border border-slate-100">
         <Link to="/" className="inline-flex items-center gap-2 text-primary-600 hover:text-primary-700 font-medium mb-8 transition-colors">
           <ArrowLeft className="w-4 h-4" />

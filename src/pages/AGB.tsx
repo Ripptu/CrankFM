@@ -1,9 +1,15 @@
 import { ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import SEO from '../components/SEO';
 
 export default function AGB() {
   return (
     <div className="min-h-screen bg-slate-50 pt-32 pb-20 px-4 sm:px-6 lg:px-8">
+      <SEO 
+        title="AGB | Crank Facility Management"
+        description="Allgemeine Geschäftsbedingungen von Crank Facility Management."
+        url="/agb"
+      />
       <div className="max-w-3xl mx-auto bg-white p-8 md:p-12 rounded-3xl shadow-sm border border-slate-100">
         <Link to="/" className="inline-flex items-center gap-2 text-primary-600 hover:text-primary-700 font-medium mb-8 transition-colors">
           <ArrowLeft className="w-4 h-4" />

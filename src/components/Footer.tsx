@@ -1,12 +1,19 @@
-import { Building2 } from 'lucide-react';
+import { Building2, Instagram } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function Footer() {
   return (
     <footer className="bg-white border-t border-slate-100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-        <div className="flex items-center gap-2">
-          <img src="https://s1.directupload.eu/images/260224/kgemdfqa.png" alt="Crank Facility Management" className="h-8 w-auto object-contain grayscale opacity-70" width="120" height="32" loading="lazy" />
+        <div className="flex flex-col items-center md:items-start gap-4">
+          <div className="flex items-center gap-2">
+            <img src="https://s1.directupload.eu/images/260224/kgemdfqa.png" alt="Crank Facility Management" className="h-8 w-auto object-contain grayscale opacity-70" width="120" height="32" loading="lazy" />
+          </div>
+          <div className="flex items-center gap-4">
+            <a href="https://www.instagram.com/crank.facility/" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-primary-600 transition-colors" aria-label="Instagram">
+              <Instagram className="w-5 h-5" />
+            </a>
+          </div>
         </div>
         <div className="flex flex-wrap justify-center gap-6 text-sm text-slate-500">
           <Link to="/standorte/wolfratshausen" className="hover:text-primary-600 transition-colors">Wolfratshausen</Link>

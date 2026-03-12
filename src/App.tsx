@@ -5,7 +5,7 @@
 
 import { useState, useEffect, useRef, FormEvent, Suspense, lazy } from 'react';
 import { motion, AnimatePresence, useInView, useSpring, useTransform, useScroll } from 'motion/react';
-import { Star, CheckCircle2, Building2, Leaf, Snowflake, Wrench, ArrowRight, Menu, PhoneCall, MessageCircle, X, ChevronDown, MapPin, Calculator, Quote, Plus, Minus, Check, Briefcase, Send, Mail } from 'lucide-react';
+import { Star, CheckCircle2, Building2, Leaf, Snowflake, Wrench, ArrowRight, Menu, PhoneCall, MessageCircle, X, ChevronDown, MapPin, Calculator, Quote, Plus, Minus, Check, Briefcase, Send, Mail, Instagram } from 'lucide-react';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -904,6 +904,15 @@ function Home() {
                   <div>
                     <p className="font-bold text-slate-900">WhatsApp</p>
                     <p className="text-sm text-slate-500">Direkt im Chat klären</p>
+                  </div>
+                </a>
+                <a href="https://www.instagram.com/crank.facility/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 p-4 rounded-2xl border border-slate-200 hover:border-pink-500 hover:bg-pink-50 transition-all group">
+                  <div className="w-12 h-12 bg-pink-100 text-pink-600 rounded-full flex items-center justify-center group-hover:bg-gradient-to-tr group-hover:from-yellow-400 group-hover:via-pink-500 group-hover:to-purple-500 group-hover:text-white transition-colors">
+                    <Instagram className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="font-bold text-slate-900">Instagram</p>
+                    <p className="text-sm text-slate-500">@crank.facility</p>
                   </div>
                 </a>
               </div>

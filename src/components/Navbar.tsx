@@ -5,20 +5,29 @@ import { Link, useLocation } from 'react-router-dom';
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { scrollY } = useScroll();
   const location = useLocation();
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     setIsScrolled(latest > 50);
+    
+    const previous = scrollY.getPrevious() || 0;
+    if (latest < 100) {
+      setIsVisible(true);
+    } else if (latest > previous && latest > 150) {
+      setIsVisible(false);
+      setIsMobileMenuOpen(false); // Close mobile menu when hiding navbar
+    } else if (latest < previous) {
+      setIsVisible(true);
+    }
   });
 
   const isHome = location.pathname === '/';
 
   const scrollToSection = (id: string) => {
     if (!isHome) {
-      // If not on home, we just navigate to home with hash (handled by useEffect in Home or simple anchor)
-      // For simplicity in this demo, we'll use a Link with hash or programmatic navigation
       window.location.href = `/#${id}`;
     } else {
       const element = document.getElementById(id);
@@ -30,7 +39,12 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="fixed top-6 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none">
+    <motion.nav 
+      initial={{ y: 0 }}
+      animate={{ y: isVisible ? 0 : -150 }}
+      transition={{ duration: 0.3, ease: "easeInOut" }}
+      className="fixed top-6 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none"
+    >
       <motion.div 
         layout
         initial={{ width: "90%", maxWidth: "1024px", borderRadius: "9999px" }}
@@ -88,6 +102,6 @@ export default function Navbar() {
           </div>
         </motion.div>
       )}
-    </nav>
+    </motion.nav>
   );
 }

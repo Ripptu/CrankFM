@@ -44,6 +44,20 @@ function AnimatedCounter({ value, suffix = "" }: { value: number, suffix?: strin
   return <motion.span ref={ref}>{display}</motion.span>;
 }
 
+function Reveal({ children, delay = 0, y = 50, className = "" }: { children: React.ReactNode, delay?: number, y?: number, className?: string }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.8, delay, ease: [0.21, 0.47, 0.32, 0.98] }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
 function NotFound() {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center text-center px-4">
@@ -78,6 +92,7 @@ function Home() {
 
   const { scrollY } = useScroll();
   const heroY = useTransform(scrollY, [0, 500], [0, 150]);
+  const heroScale = useTransform(scrollY, [0, 500], [1.05, 1.15]);
   const heroOpacity = useTransform(scrollY, [0, 300], [1, 0]);
 
   const toggleCheck = (index: number) => {
@@ -200,11 +215,11 @@ function Home() {
       {/* Hero Section */}
       <section className="relative pt-24 sm:pt-48 pb-20 sm:pb-32 w-full flex flex-col items-center text-center min-h-[90vh] justify-center overflow-hidden">
         {/* Background Image with Parallax */}
-        <motion.div style={{ y: heroY, opacity: heroOpacity }} className="absolute inset-0 z-0">
+        <motion.div style={{ y: heroY, opacity: heroOpacity, scale: heroScale }} className="absolute inset-0 z-0 origin-top">
           <img 
             src="https://i.postimg.cc/F9fHrYLH/hf-20260223-135452-f3c098df-7ba2-40bc-9ec6-1ae451a99f05.webp" 
             alt="Hintergrund" 
-            className="w-full h-full object-cover object-top scale-110"
+            className="w-full h-full object-cover object-top"
             fetchPriority="high"
             loading="eager"
           />
@@ -317,63 +332,79 @@ function Home() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-12 bg-white border-b border-slate-100 relative z-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center divide-y md:divide-y-0 md:divide-x divide-slate-100">
-            <div className="py-4">
-              <div className="text-4xl md:text-5xl font-serif font-bold text-primary-600 mb-2">
-                <AnimatedCounter value={15000} suffix="+" />
+      <Reveal>
+        <section className="py-12 bg-white border-b border-slate-100 relative z-20">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center divide-y md:divide-y-0 md:divide-x divide-slate-100">
+              <div className="py-4">
+                <div className="text-4xl md:text-5xl font-serif font-bold text-primary-600 mb-2">
+                  <AnimatedCounter value={15000} suffix="+" />
+                </div>
+                <p className="text-slate-500 font-medium">m² gereinigte Fläche</p>
               </div>
-              <p className="text-slate-500 font-medium">m² gereinigte Fläche</p>
-            </div>
-            <div className="py-4">
-              <div className="text-4xl md:text-5xl font-serif font-bold text-primary-600 mb-2">
-                <AnimatedCounter value={50} suffix="+" />
+              <div className="py-4">
+                <div className="text-4xl md:text-5xl font-serif font-bold text-primary-600 mb-2">
+                  <AnimatedCounter value={50} suffix="+" />
+                </div>
+                <p className="text-slate-500 font-medium">betreute Objekte</p>
               </div>
-              <p className="text-slate-500 font-medium">betreute Objekte</p>
-            </div>
-            <div className="py-4">
-              <div className="text-4xl md:text-5xl font-serif font-bold text-primary-600 mb-2">
-                <AnimatedCounter value={100} suffix="%" />
+              <div className="py-4">
+                <div className="text-4xl md:text-5xl font-serif font-bold text-primary-600 mb-2">
+                  <AnimatedCounter value={100} suffix="%" />
+                </div>
+                <p className="text-slate-500 font-medium">Zuverlässigkeit</p>
               </div>
-              <p className="text-slate-500 font-medium">Zuverlässigkeit</p>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </Reveal>
 
       {/* Services Section */}
-      <section id="leistungen" className="py-24 bg-slate-50 px-4 sm:px-6 lg:px-8">
+      <section id="leistungen" className="py-24 bg-slate-50 px-4 sm:px-6 lg:px-8 overflow-hidden">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-slate-200 shadow-sm mb-6">
-              <Star className="w-3.5 h-3.5 text-primary-600 fill-primary-600" />
-              <span className="text-xs font-semibold tracking-wide text-slate-700 uppercase">Unsere Expertise</span>
+          <Reveal>
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-slate-200 shadow-sm mb-6">
+                <Star className="w-3.5 h-3.5 text-primary-600 fill-primary-600" />
+                <span className="text-xs font-semibold tracking-wide text-slate-700 uppercase">Unsere Expertise</span>
+              </div>
+              <h2 className="text-4xl md:text-5xl font-serif text-slate-900 mb-4">Alles aus einer <span className="italic text-primary-600">Hand</span></h2>
+              <p className="text-lg text-slate-500 max-w-2xl mx-auto">Maßgeschneiderte Lösungen für den perfekten Zustand Ihrer Immobilie.</p>
             </div>
-            <h2 className="text-4xl md:text-5xl font-serif text-slate-900 mb-4">Alles aus einer <span className="italic text-primary-600">Hand</span></h2>
-            <p className="text-lg text-slate-500 max-w-2xl mx-auto">Maßgeschneiderte Lösungen für den perfekten Zustand Ihrer Immobilie.</p>
-          </div>
+          </Reveal>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <motion.div 
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
+            variants={{
+              visible: { transition: { staggerChildren: 0.15 } }
+            }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+          >
             {orderedServices.map((service, i) => (
               <motion.div 
                 key={service.id}
-                whileHover={{ y: -5 }}
-                className="bg-white p-8 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 transition-all hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] relative overflow-hidden"
+                variants={{
+                  hidden: { opacity: 0, y: 50 },
+                  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.21, 0.47, 0.32, 0.98] } }
+                }}
+                whileHover={{ y: -5, scale: 1.02 }}
+                className="bg-white p-8 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 transition-all hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] relative overflow-hidden group"
               >
                 {i === 0 && (
                   <div className="absolute top-0 right-0 bg-primary-600 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
                     Saison-Fokus
                   </div>
                 )}
-                <div className="w-14 h-14 bg-primary-50 rounded-2xl flex items-center justify-center mb-6">
+                <div className="w-14 h-14 bg-primary-50 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                   {service.icon}
                 </div>
                 <h3 className="text-xl font-bold text-slate-900 mb-3">{service.title}</h3>
                 <p className="text-slate-500 leading-relaxed">{service.desc}</p>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -381,73 +412,78 @@ function Home() {
       <section className="py-24 bg-white px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           {/* Data-Viz */}
-          <div className="bg-slate-50 rounded-[3rem] p-12 flex flex-col items-center justify-center text-center border border-slate-100 shadow-sm relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-primary-100 rounded-full blur-3xl -mr-20 -mt-20 opacity-50"></div>
-            <div className="absolute bottom-0 left-0 w-64 h-64 bg-green-100 rounded-full blur-3xl -ml-20 -mb-20 opacity-50"></div>
-            
-            <div className="relative w-64 h-64 mb-8">
-              <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                <circle cx="50" cy="50" r="45" fill="none" stroke="#f1f5f9" strokeWidth="8" />
-                <motion.circle 
-                  cx="50" cy="50" r="45" fill="none" stroke="#2563eb" strokeWidth="8"
-                  strokeLinecap="round"
-                  initial={{ strokeDasharray: "283", strokeDashoffset: "283" }}
-                  whileInView={{ strokeDashoffset: 0 }}
-                  transition={{ duration: 2, ease: "easeOut" }}
-                  viewport={{ once: true }}
-                />
-              </svg>
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-4xl font-serif font-bold text-slate-900">100%</span>
-                <span className="text-sm font-medium text-slate-500 uppercase tracking-wider mt-1">Sorgenfrei</span>
+          <Reveal delay={0.1}>
+            <div className="bg-slate-50 rounded-[3rem] p-12 flex flex-col items-center justify-center text-center border border-slate-100 shadow-sm relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-primary-100 rounded-full blur-3xl -mr-20 -mt-20 opacity-50"></div>
+              <div className="absolute bottom-0 left-0 w-64 h-64 bg-green-100 rounded-full blur-3xl -ml-20 -mb-20 opacity-50"></div>
+              
+              <div className="relative w-64 h-64 mb-8">
+                <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                  <circle cx="50" cy="50" r="45" fill="none" stroke="#f1f5f9" strokeWidth="8" />
+                  <motion.circle 
+                    cx="50" cy="50" r="45" fill="none" stroke="#2563eb" strokeWidth="8"
+                    strokeLinecap="round"
+                    initial={{ strokeDasharray: "283", strokeDashoffset: "283" }}
+                    whileInView={{ strokeDashoffset: 0 }}
+                    transition={{ duration: 2, ease: "easeOut" }}
+                    viewport={{ once: true }}
+                  />
+                </svg>
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <span className="text-4xl font-serif font-bold text-slate-900">100%</span>
+                  <span className="text-sm font-medium text-slate-500 uppercase tracking-wider mt-1">Sorgenfrei</span>
+                </div>
               </div>
+              <h3 className="text-2xl font-serif text-slate-900 mb-4 relative z-10">Wir übernehmen die komplette Koordination.</h3>
+              <p className="text-slate-600 relative z-10">Sie haben den Kopf frei für Ihr Kerngeschäft. Wir kümmern uns um den Rest.</p>
             </div>
-            <h3 className="text-2xl font-serif text-slate-900 mb-4 relative z-10">Wir übernehmen die komplette Koordination.</h3>
-            <p className="text-slate-600 relative z-10">Sie haben den Kopf frei für Ihr Kerngeschäft. Wir kümmern uns um den Rest.</p>
-          </div>
+          </Reveal>
 
           {/* Checklist */}
-          <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-slate-200 shadow-sm mb-6">
-              <CheckCircle2 className="w-3.5 h-3.5 text-primary-600" />
-              <span className="text-xs font-semibold tracking-wide text-slate-700 uppercase">Transparenz</span>
+          <Reveal delay={0.3}>
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-slate-200 shadow-sm mb-6">
+                <CheckCircle2 className="w-3.5 h-3.5 text-primary-600" />
+                <span className="text-xs font-semibold tracking-wide text-slate-700 uppercase">Transparenz</span>
+              </div>
+              <h2 className="text-3xl md:text-4xl font-serif text-slate-900 mb-8">Was umfasst unsere Unterhaltsreinigung?</h2>
+              
+              <div className="space-y-3">
+                {[
+                  "Bodenreinigung (Saugen & Wischen)",
+                  "Sanitäranlagen reinigen & desinfizieren",
+                  "Oberflächen & Schreibtische abwischen",
+                  "Mülleimer leeren & Mülltrennung",
+                  "Küche & Aufenthaltsräume säubern"
+                ].map((item, i) => {
+                  const isChecked = checkedItems.includes(i);
+                  return (
+                    <button 
+                      key={i}
+                      onClick={() => toggleCheck(i)}
+                      className={`w-full flex items-center gap-4 p-4 rounded-2xl border transition-all duration-300 text-left ${isChecked ? 'bg-primary-50/50 border-primary-200' : 'bg-white border-slate-200 hover:border-primary-300'}`}
+                    >
+                      <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 transition-colors duration-300 ${isChecked ? 'bg-primary-500' : 'bg-slate-100'}`}>
+                        {isChecked && <Check className="w-4 h-4 text-white" />}
+                      </div>
+                      <span className={`font-medium transition-all duration-300 ${isChecked ? 'text-slate-400 line-through decoration-primary-500/50' : 'text-slate-700'}`}>
+                        {item}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
-            <h2 className="text-3xl md:text-4xl font-serif text-slate-900 mb-8">Was umfasst unsere Unterhaltsreinigung?</h2>
-            
-            <div className="space-y-3">
-              {[
-                "Bodenreinigung (Saugen & Wischen)",
-                "Sanitäranlagen reinigen & desinfizieren",
-                "Oberflächen & Schreibtische abwischen",
-                "Mülleimer leeren & Mülltrennung",
-                "Küche & Aufenthaltsräume säubern"
-              ].map((item, i) => {
-                const isChecked = checkedItems.includes(i);
-                return (
-                  <button 
-                    key={i}
-                    onClick={() => toggleCheck(i)}
-                    className={`w-full flex items-center gap-4 p-4 rounded-2xl border transition-all duration-300 text-left ${isChecked ? 'bg-primary-50/50 border-primary-200' : 'bg-white border-slate-200 hover:border-primary-300'}`}
-                  >
-                    <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 transition-colors duration-300 ${isChecked ? 'bg-primary-500' : 'bg-slate-100'}`}>
-                      {isChecked && <Check className="w-4 h-4 text-white" />}
-                    </div>
-                    <span className={`font-medium transition-all duration-300 ${isChecked ? 'text-slate-400 line-through decoration-primary-500/50' : 'text-slate-700'}`}>
-                      {item}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+          </Reveal>
         </div>
       </section>
 
       {/* Calculator Section */}
       <section id="preise" className="py-24 bg-white px-4 sm:px-6 lg:px-8 border-t border-slate-100">
-        <div className="max-w-7xl mx-auto">
-          <div className="bg-slate-50 rounded-[3rem] p-8 md:p-16 border border-slate-100 shadow-sm">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <Reveal>
+          <div className="max-w-7xl mx-auto">
+            <div className="bg-slate-50 rounded-[3rem] p-8 md:p-16 border border-slate-100 shadow-sm">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
               <div>
                 <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-slate-200 shadow-sm mb-6">
                   <Calculator className="w-3.5 h-3.5 text-primary-600" />
@@ -501,198 +537,240 @@ function Home() {
               </div>
             </div>
           </div>
-        </div>
+          </div>
+        </Reveal>
       </section>
 
       {/* Testimonials */}
       <section className="py-24 bg-white px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-slate-200 shadow-sm mb-6">
-              <Quote className="w-3.5 h-3.5 text-primary-600" />
-              <span className="text-xs font-semibold tracking-wide text-slate-700 uppercase">Kundenstimmen</span>
-            </div>
-            <h2 className="text-4xl md:text-5xl font-serif text-slate-900 mb-4">Das sagen unsere <span className="italic text-primary-600">Kunden</span></h2>
-            <a href="https://share.google/LxjfNM24lN9BGlGjz" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-6 py-3 bg-white border border-slate-200 hover:border-primary-500 hover:bg-primary-50 rounded-full font-medium text-slate-700 transition-all shadow-sm">
-              <svg className="w-5 h-5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-              </svg>
-              Auf Google bewerten
-            </a>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {testimonials.map((t, i) => (
-              <div key={i} className="bg-slate-50 p-8 rounded-3xl border border-slate-100 relative">
-                <div className="flex gap-1 mb-6">
-                  {[...Array(t.rating)].map((_, j) => (
-                    <Star key={j} className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                  ))}
-                </div>
-                <p className="text-slate-700 mb-8 leading-relaxed">"{t.text}"</p>
-                <div className="flex items-center gap-4 mt-auto">
-                  <div>
-                    <h4 className="font-bold text-slate-900 text-sm">{t.name}</h4>
-                    <p className="text-xs text-slate-500">{t.role}</p>
-                  </div>
-                </div>
+        <Reveal>
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-slate-200 shadow-sm mb-6">
+                <Quote className="w-3.5 h-3.5 text-primary-600" />
+                <span className="text-xs font-semibold tracking-wide text-slate-700 uppercase">Kundenstimmen</span>
               </div>
-            ))}
+              <h2 className="text-4xl md:text-5xl font-serif text-slate-900 mb-4">Das sagen unsere <span className="italic text-primary-600">Kunden</span></h2>
+              <a href="https://share.google/LxjfNM24lN9BGlGjz" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-6 py-3 bg-white border border-slate-200 hover:border-primary-500 hover:bg-primary-50 rounded-full font-medium text-slate-700 transition-all shadow-sm">
+                <svg className="w-5 h-5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                </svg>
+                Auf Google bewerten
+              </a>
+            </div>
+
+            <motion.div 
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-50px" }}
+              variants={{
+                visible: { transition: { staggerChildren: 0.15 } }
+              }}
+              className="grid grid-cols-1 md:grid-cols-3 gap-8"
+            >
+              {testimonials.map((t, i) => (
+                <motion.div 
+                  key={i} 
+                  variants={{
+                    hidden: { opacity: 0, scale: 0.9, y: 30 },
+                    visible: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.6, ease: [0.21, 0.47, 0.32, 0.98] } }
+                  }}
+                  className="bg-slate-50 p-8 rounded-3xl border border-slate-100 relative"
+                >
+                  <div className="flex gap-1 mb-6">
+                    {[...Array(t.rating)].map((_, j) => (
+                      <Star key={j} className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+                    ))}
+                  </div>
+                  <p className="text-slate-700 mb-8 leading-relaxed">"{t.text}"</p>
+                  <div className="flex items-center gap-4 mt-auto">
+                    <div>
+                      <h4 className="font-bold text-slate-900 text-sm">{t.name}</h4>
+                      <p className="text-xs text-slate-500">{t.role}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
           </div>
-        </div>
+        </Reveal>
       </section>
 
       {/* FAQ & Map Section */}
       <section id="faq" className="py-24 bg-slate-50 px-4 sm:px-6 lg:px-8 border-t border-slate-100">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16">
-          {/* FAQ */}
-          <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-slate-200 shadow-sm mb-6">
-              <MessageCircle className="w-3.5 h-3.5 text-primary-600" />
-              <span className="text-xs font-semibold tracking-wide text-slate-700 uppercase">FAQ</span>
+        <Reveal>
+          <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16">
+            {/* FAQ */}
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-slate-200 shadow-sm mb-6">
+                <MessageCircle className="w-3.5 h-3.5 text-primary-600" />
+                <span className="text-xs font-semibold tracking-wide text-slate-700 uppercase">FAQ</span>
+              </div>
+              <h2 className="text-3xl md:text-4xl font-serif text-slate-900 mb-8">Häufig gestellte Fragen</h2>
+              
+              <div className="space-y-4">
+                {faqs.map((faq, i) => (
+                  <div key={i} className="bg-white border border-slate-200 rounded-2xl overflow-hidden transition-all">
+                    <button 
+                      onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                      className="w-full px-6 py-5 flex items-center justify-between text-left focus:outline-none"
+                    >
+                      <span className="font-semibold text-slate-900 pr-4">{faq.q}</span>
+                      <ChevronDown className={`w-5 h-5 text-slate-400 transition-transform duration-300 ${openFaq === i ? 'rotate-180' : ''}`} />
+                    </button>
+                    <AnimatePresence>
+                      {openFaq === i && (
+                        <motion.div 
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          className="overflow-hidden"
+                        >
+                          <div className="px-6 pb-5 text-slate-600 leading-relaxed border-t border-slate-50 pt-4">
+                            {faq.a}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                ))}
+              </div>
             </div>
-            <h2 className="text-3xl md:text-4xl font-serif text-slate-900 mb-8">Häufig gestellte Fragen</h2>
-            
-            <div className="space-y-4">
-              {faqs.map((faq, i) => (
-                <div key={i} className="bg-white border border-slate-200 rounded-2xl overflow-hidden transition-all">
+
+            {/* Map */}
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-slate-200 shadow-sm mb-6">
+                <MapPin className="w-3.5 h-3.5 text-primary-600" />
+                <span className="text-xs font-semibold tracking-wide text-slate-700 uppercase">Einsatzgebiet</span>
+              </div>
+              <h2 className="text-3xl md:text-4xl font-serif text-slate-900 mb-8">Immer in Ihrer Nähe</h2>
+              
+              <div className="bg-white p-2 rounded-3xl border border-slate-200 shadow-sm h-[400px] relative overflow-hidden">
+                <iframe 
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d170668.6496464522!2d11.317585324508947!3d47.879024193890494!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x479d9ab4069c1181%3A0x41e48add78c9c00!2sGeretsried!5e0!3m2!1sen!2sde!4v1700000000000!5m2!1sen!2sde" 
+                  width="100%" 
+                  height="100%" 
+                  style={{ border: 0, filter: 'grayscale(1) contrast(1.1) opacity(0.8)' }} 
+                  allowFullScreen={false} 
+                  loading="lazy" 
+                  referrerPolicy="no-referrer-when-downgrade"
+                  className="rounded-2xl"
+                ></iframe>
+                
+                <div className="absolute bottom-6 left-6 right-6 bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-lg border border-slate-100 flex items-center gap-4">
+                  <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center shrink-0">
+                    <Building2 className="w-5 h-5 text-primary-600" />
+                  </div>
+                  <div>
+                    <p className="font-bold text-slate-900 text-sm">Hauptsitz Geretsried</p>
+                    <p className="text-xs text-slate-500">Einsatzgebiet: Geretsried & Umgebung (+50km)</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Reveal>
+      </section>
+
+      {/* Karriere Section */}
+      <section id="karriere" className="py-24 bg-white px-4 sm:px-6 lg:px-8">
+        <Reveal>
+          <div className="max-w-3xl mx-auto">
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-slate-200 shadow-sm mb-6">
+                <Briefcase className="w-3.5 h-3.5 text-primary-600" />
+                <span className="text-xs font-semibold tracking-wide text-slate-700 uppercase">Karriere</span>
+              </div>
+              <h2 className="text-4xl md:text-5xl font-serif text-slate-900 mb-4">Werden Sie Teil unseres <span className="italic text-primary-600">Teams</span></h2>
+              <p className="text-lg text-slate-500">Wir suchen motivierte Mitarbeiter, die mit uns wachsen wollen.</p>
+            </div>
+
+            <motion.div 
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-50px" }}
+              variants={{
+                visible: { transition: { staggerChildren: 0.1 } }
+              }}
+              className="space-y-4"
+            >
+              {[
+                { title: "Gebäudereiniger (m/w/d)", reqs: "Erfahrung in der Unterhaltsreinigung, Zuverlässigkeit, Deutschkenntnisse." },
+                { title: "Gärtner (m/w/d)", reqs: "Abgeschlossene Ausbildung im Garten- und Landschaftsbau, Führerschein Klasse B." },
+                { title: "Hausmeister (m/w/d)", reqs: "Handwerkliches Geschick, selbstständige Arbeitsweise, technisches Verständnis." }
+              ].map((job, i) => (
+                <motion.div 
+                  key={i} 
+                  variants={{
+                    hidden: { opacity: 0, y: 20 },
+                    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
+                  }}
+                  className="bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden transition-all"
+                >
                   <button 
-                    onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                    className="w-full px-6 py-5 flex items-center justify-between text-left focus:outline-none"
+                    onClick={() => setOpenJob(openJob === i ? null : i)}
+                    className="w-full px-6 py-5 flex items-center justify-between text-left focus:outline-none hover:bg-slate-100/50 transition-colors"
                   >
-                    <span className="font-semibold text-slate-900 pr-4">{faq.q}</span>
-                    <ChevronDown className={`w-5 h-5 text-slate-400 transition-transform duration-300 ${openFaq === i ? 'rotate-180' : ''}`} />
+                    <span className="font-bold text-slate-900 text-lg">{job.title}</span>
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${openJob === i ? 'bg-primary-600 text-white' : 'bg-white text-slate-400 shadow-sm border border-slate-200'}`}>
+                      {openJob === i ? <Minus className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+                    </div>
                   </button>
                   <AnimatePresence>
-                    {openFaq === i && (
+                    {openJob === i && (
                       <motion.div 
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
                         className="overflow-hidden"
                       >
-                        <div className="px-6 pb-5 text-slate-600 leading-relaxed border-t border-slate-50 pt-4">
-                          {faq.a}
+                        <div className="px-6 pb-6 pt-2 border-t border-slate-200/50">
+                          <p className="text-slate-600 mb-6 leading-relaxed"><strong className="text-slate-900">Anforderungen:</strong> {job.reqs}</p>
+                          <button 
+                            onClick={() => setIsContactPopupOpen(true)}
+                            className="px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-full font-medium transition-all hover:shadow-lg hover:-translate-y-0.5 flex items-center gap-2"
+                          >
+                            In 60 Sekunden bewerben
+                            <ArrowRight className="w-4 h-4" />
+                          </button>
                         </div>
                       </motion.div>
                     )}
                   </AnimatePresence>
-                </div>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           </div>
-
-          {/* Map */}
-          <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-slate-200 shadow-sm mb-6">
-              <MapPin className="w-3.5 h-3.5 text-primary-600" />
-              <span className="text-xs font-semibold tracking-wide text-slate-700 uppercase">Einsatzgebiet</span>
-            </div>
-            <h2 className="text-3xl md:text-4xl font-serif text-slate-900 mb-8">Immer in Ihrer Nähe</h2>
-            
-            <div className="bg-white p-2 rounded-3xl border border-slate-200 shadow-sm h-[400px] relative overflow-hidden">
-              <iframe 
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d170668.6496464522!2d11.317585324508947!3d47.879024193890494!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x479d9ab4069c1181%3A0x41e48add78c9c00!2sGeretsried!5e0!3m2!1sen!2sde!4v1700000000000!5m2!1sen!2sde" 
-                width="100%" 
-                height="100%" 
-                style={{ border: 0, filter: 'grayscale(1) contrast(1.1) opacity(0.8)' }} 
-                allowFullScreen={false} 
-                loading="lazy" 
-                referrerPolicy="no-referrer-when-downgrade"
-                className="rounded-2xl"
-              ></iframe>
-              
-              <div className="absolute bottom-6 left-6 right-6 bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-lg border border-slate-100 flex items-center gap-4">
-                <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center shrink-0">
-                  <Building2 className="w-5 h-5 text-primary-600" />
-                </div>
-                <div>
-                  <p className="font-bold text-slate-900 text-sm">Hauptsitz Geretsried</p>
-                  <p className="text-xs text-slate-500">Einsatzgebiet: Geretsried & Umgebung (+50km)</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Karriere Section */}
-      <section id="karriere" className="py-24 bg-white px-4 sm:px-6 lg:px-8">
-        <div className="max-w-3xl mx-auto">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-slate-200 shadow-sm mb-6">
-              <Briefcase className="w-3.5 h-3.5 text-primary-600" />
-              <span className="text-xs font-semibold tracking-wide text-slate-700 uppercase">Karriere</span>
-            </div>
-            <h2 className="text-4xl md:text-5xl font-serif text-slate-900 mb-4">Werden Sie Teil unseres <span className="italic text-primary-600">Teams</span></h2>
-            <p className="text-lg text-slate-500">Wir suchen motivierte Mitarbeiter, die mit uns wachsen wollen.</p>
-          </div>
-
-          <div className="space-y-4">
-            {[
-              { title: "Gebäudereiniger (m/w/d)", reqs: "Erfahrung in der Unterhaltsreinigung, Zuverlässigkeit, Deutschkenntnisse." },
-              { title: "Gärtner (m/w/d)", reqs: "Abgeschlossene Ausbildung im Garten- und Landschaftsbau, Führerschein Klasse B." },
-              { title: "Hausmeister (m/w/d)", reqs: "Handwerkliches Geschick, selbstständige Arbeitsweise, technisches Verständnis." }
-            ].map((job, i) => (
-              <div key={i} className="bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden transition-all">
-                <button 
-                  onClick={() => setOpenJob(openJob === i ? null : i)}
-                  className="w-full px-6 py-5 flex items-center justify-between text-left focus:outline-none hover:bg-slate-100/50 transition-colors"
-                >
-                  <span className="font-bold text-slate-900 text-lg">{job.title}</span>
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${openJob === i ? 'bg-primary-600 text-white' : 'bg-white text-slate-400 shadow-sm border border-slate-200'}`}>
-                    {openJob === i ? <Minus className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
-                  </div>
-                </button>
-                <AnimatePresence>
-                  {openJob === i && (
-                    <motion.div 
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      className="overflow-hidden"
-                    >
-                      <div className="px-6 pb-6 pt-2 border-t border-slate-200/50">
-                        <p className="text-slate-600 mb-6 leading-relaxed"><strong className="text-slate-900">Anforderungen:</strong> {job.reqs}</p>
-                        <button className="px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-full font-medium transition-all hover:shadow-lg hover:-translate-y-0.5 flex items-center gap-2">
-                          In 60 Sekunden bewerben
-                          <ArrowRight className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            ))}
-          </div>
-        </div>
+        </Reveal>
       </section>
 
       {/* Final CTA */}
       <section id="kontakt" className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="relative rounded-[3rem] p-12 md:p-20 text-center overflow-hidden bg-white/10 backdrop-blur-xl border border-white/20 shadow-[0_8px_32px_0_rgba(37,99,235,0.15)]">
-          <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary-500/90 to-primary-700/90"></div>
-          <div className="absolute top-0 left-0 w-full h-full overflow-hidden rounded-[3rem] -z-10">
-            <div className="absolute -top-[50%] -left-[10%] w-[70%] h-[150%] bg-white/20 blur-3xl rounded-full transform rotate-12"></div>
-            <div className="absolute -bottom-[50%] -right-[10%] w-[70%] h-[150%] bg-primary-400/30 blur-3xl rounded-full transform -rotate-12"></div>
+        <Reveal>
+          <div className="relative rounded-[3rem] p-12 md:p-20 text-center overflow-hidden bg-white/10 backdrop-blur-xl border border-white/20 shadow-[0_8px_32px_0_rgba(37,99,235,0.15)]">
+            <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary-500/90 to-primary-700/90"></div>
+            <div className="absolute top-0 left-0 w-full h-full overflow-hidden rounded-[3rem] -z-10">
+              <div className="absolute -top-[50%] -left-[10%] w-[70%] h-[150%] bg-white/20 blur-3xl rounded-full transform rotate-12"></div>
+              <div className="absolute -bottom-[50%] -right-[10%] w-[70%] h-[150%] bg-primary-400/30 blur-3xl rounded-full transform -rotate-12"></div>
+            </div>
+            
+            <div className="relative z-10 max-w-3xl mx-auto">
+              <h2 className="text-4xl md:text-6xl font-serif text-white mb-6 drop-shadow-sm">
+                Bereit für eine <span className="italic">sorgenfreie</span> Immobilie?
+              </h2>
+              <p className="text-primary-50 text-lg md:text-xl mb-10 font-medium">
+                Kontaktieren Sie uns für ein unverbindliches Erstgespräch vor Ort. Wir erstellen ein Konzept, das genau zu Ihren Anforderungen passt.
+              </p>
+              <button onClick={() => setIsContactPopupOpen(true)} className="px-8 py-4 bg-white text-primary-900 hover:bg-slate-50 rounded-full font-bold text-lg transition-all hover:shadow-[0_0_40px_rgba(255,255,255,0.3)] hover:-translate-y-1 flex items-center gap-2 mx-auto">
+                <PhoneCall className="w-5 h-5" />
+                Jetzt Kontakt aufnehmen
+              </button>
+            </div>
           </div>
-          
-          <div className="relative z-10 max-w-3xl mx-auto">
-            <h2 className="text-4xl md:text-6xl font-serif text-white mb-6 drop-shadow-sm">
-              Bereit für eine <span className="italic">sorgenfreie</span> Immobilie?
-            </h2>
-            <p className="text-primary-50 text-lg md:text-xl mb-10 font-medium">
-              Kontaktieren Sie uns für ein unverbindliches Erstgespräch vor Ort. Wir erstellen ein Konzept, das genau zu Ihren Anforderungen passt.
-            </p>
-            <button onClick={() => setIsContactPopupOpen(true)} className="px-8 py-4 bg-white text-primary-900 hover:bg-slate-50 rounded-full font-bold text-lg transition-all hover:shadow-[0_0_40px_rgba(255,255,255,0.3)] hover:-translate-y-1 flex items-center gap-2 mx-auto">
-              <PhoneCall className="w-5 h-5" />
-              Jetzt Kontakt aufnehmen
-            </button>
-          </div>
-        </div>
+        </Reveal>
       </section>
 
       <Footer />

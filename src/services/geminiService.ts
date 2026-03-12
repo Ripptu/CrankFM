@@ -1,6 +1,18 @@
 import { GoogleGenAI } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+let ai: GoogleGenAI | null = null;
+
+function getAI() {
+  if (!ai) {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      console.warn("GEMINI_API_KEY is not set. Chat Funktionalität ist eingeschränkt.");
+      return null;
+    }
+    ai = new GoogleGenAI({ apiKey });
+  }
+  return ai;
+}
 
 const SYSTEM_INSTRUCTION = `
 Du bist Felix, der freundliche und professionelle KI-Assistent von "Crank Facility Management".
@@ -46,30 +58,11 @@ Wir suchen aktuell:
 
 export async function getChatResponse(userMessage: string, chatHistory: {text: string, sender: 'user' | 'bot'}[]): Promise<string> {
   try {
-    const chat = ai.chats.create({
-      model: "gemini-3-flash-preview",
-      config: {
-        systemInstruction: SYSTEM_INSTRUCTION,
-        temperature: 0.7,
-      },
-    });
+    const aiInstance = getAI();
+    if (!aiInstance) {
+      return "Entschuldigung, der Chat ist derzeit nicht verfügbar, da der API-Schlüssel fehlt. Bitte kontaktieren Sie uns per Telefon oder E-Mail.";
+    }
 
-    // We only send the latest message to the chat instance for simplicity,
-    // but a real implementation might send the history.
-    // Since we create a new chat instance every time, we should ideally pass the history.
-    // However, the GenAI SDK chat object maintains history if we keep it around.
-    // Let's just send the user message to a new chat instance with the system prompt,
-    // and include the previous context in the message if needed, or just rely on the system prompt.
-    
-    // To properly use history with the new SDK:
-    const history = chatHistory.map(msg => ({
-      role: msg.sender === 'user' ? 'user' : 'model',
-      parts: [{ text: msg.text }]
-    }));
-
-    // Actually, the new SDK might not support passing history directly in create() easily without specific types.
-    // Let's just use generateContent with the history built into the contents array.
-    
     const contents = chatHistory.map(msg => ({
       role: msg.sender === 'user' ? 'user' : 'model',
       parts: [{ text: msg.text }]
@@ -80,7 +73,7 @@ export async function getChatResponse(userMessage: string, chatHistory: {text: s
       parts: [{ text: userMessage }]
     });
 
-    const response = await ai.models.generateContent({
+    const response = await aiInstance.models.generateContent({
       model: "gemini-3-flash-preview",
       contents: contents as any, // Cast to any to avoid strict type issues with role
       config: {

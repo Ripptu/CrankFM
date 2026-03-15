@@ -49,6 +49,7 @@ export default function Navbar() {
       setClickCount(0);
       const password = prompt("Passwort eingeben:");
       if (password === "vamela") {
+        sessionStorage.setItem('adminAuth', 'true');
         window.location.href = "/admin";
       } else {
         alert("Falsches Passwort");

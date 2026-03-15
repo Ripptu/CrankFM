@@ -11,15 +11,16 @@ interface Lead {
 }
 
 export default function Admin() {
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return sessionStorage.getItem('adminAuth') === 'true';
+  });
+  const [password, setPassword] = useState('');
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // We don't use auth here because the user requested a simple UI password.
-    // The password check happens in Navbar before redirecting here.
-    // WARNING: This means the /admin route is technically accessible if someone knows the URL,
-    // but the user explicitly requested this simple setup.
-    
+    if (!isAuthenticated) return;
+
     const q = query(collection(db, 'leads'), orderBy('createdAt', 'desc'));
     
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -35,7 +36,18 @@ export default function Admin() {
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [isAuthenticated]);
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (password === 'vamela') {
+      setIsAuthenticated(true);
+      sessionStorage.setItem('adminAuth', 'true');
+    } else {
+      alert('Falsches Passwort');
+      setPassword('');
+    }
+  };
 
   const handleDelete = async (id: string) => {
     if (window.confirm('Möchten Sie diese E-Mail-Adresse wirklich löschen?')) {
@@ -47,6 +59,43 @@ export default function Admin() {
       }
     }
   };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 font-sans">
+        <div className="max-w-md w-full bg-white rounded-3xl shadow-sm border border-slate-200 p-8 text-center">
+          <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <Mail className="w-8 h-8 text-slate-600" />
+          </div>
+          <h1 className="text-2xl font-bold text-slate-900 mb-2">Admin Login</h1>
+          <p className="text-slate-500 mb-8 text-sm">Bitte geben Sie das Passwort ein, um auf die Leads zuzugreifen.</p>
+          
+          <form onSubmit={handleLogin} className="flex flex-col gap-4">
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Passwort"
+              className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+              autoFocus
+            />
+            <button 
+              type="submit"
+              className="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-medium transition-colors"
+            >
+              Einloggen
+            </button>
+          </form>
+          
+          <div className="mt-6">
+            <Link to="/" className="text-sm text-slate-500 hover:text-slate-700 transition-colors">
+              Zurück zur Startseite
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 p-4 md:p-8 font-sans text-slate-800">

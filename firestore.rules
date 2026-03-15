@@ -1,0 +1,37 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    // Collection: leads
+    // Document ID: auto-generated
+    // Fields:
+    //   - email: string (required, valid email)
+    //   - createdAt: timestamp (required)
+    // ===============================================================
+
+    function isValidEmail(email) {
+      return email is string && email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$") && email.size() < 100;
+    }
+
+    function isValidLead(data) {
+      return data.keys().hasOnly(['email', 'createdAt']) &&
+             isValidEmail(data.email) &&
+             data.createdAt is timestamp;
+    }
+
+    match /leads/{leadId} {
+      // Allow anyone to create a lead
+      allow create: if isValidLead(request.resource.data);
+      
+      // Allow anyone to read and delete leads (as requested by the user for the custom UI password "vamela")
+      // WARNING: This is insecure as anyone can access the Firestore data directly.
+      allow read, delete: if true;
+      
+      // Do not allow updates
+      allow update: if false;
+    }
+  }
+}

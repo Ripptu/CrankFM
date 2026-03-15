@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, useScroll, useMotionValueEvent } from 'motion/react';
 import { Building2, Menu, X } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
@@ -38,6 +38,30 @@ export default function Navbar() {
     setIsMobileMenuOpen(false);
   };
 
+  const [clickCount, setClickCount] = useState(0);
+
+  const handleLogoClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const newCount = clickCount + 1;
+    setClickCount(newCount);
+    
+    if (newCount === 5) {
+      setClickCount(0);
+      const password = prompt("Passwort eingeben:");
+      if (password === "vamela") {
+        window.location.href = "/admin";
+      } else {
+        alert("Falsches Passwort");
+      }
+    } else {
+      if (isHome) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        window.location.href = "/";
+      }
+    }
+  };
+
   return (
     <motion.nav 
       initial={{ y: 0 }}
@@ -57,9 +81,9 @@ export default function Navbar() {
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
         className="pointer-events-auto backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 hidden md:flex items-center justify-between gap-8"
       >
-        <Link to="/" className="flex items-center gap-2 shrink-0">
+        <a href="/" onClick={handleLogoClick} className="flex items-center gap-2 shrink-0">
           <img src="https://s1.directupload.eu/images/260224/kgemdfqa.png" alt="Crank Facility Management" className="h-10 w-auto object-contain hidden md:block" width="150" height="40" loading="eager" fetchPriority="high" />
-        </Link>
+        </a>
         
         <div className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600 whitespace-nowrap">
           <button onClick={() => scrollToSection('leistungen')} className="hover:text-primary-600 transition-colors">Leistungen</button>

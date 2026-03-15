@@ -3,18 +3,22 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useEffect, useRef, FormEvent, Suspense, lazy } from 'react';
+import React, { useState, useEffect, useRef, FormEvent, Suspense, lazy } from 'react';
 import { motion, AnimatePresence, useInView, useSpring, useTransform, useScroll } from 'motion/react';
 import { Star, CheckCircle2, Building2, Leaf, Snowflake, Wrench, ArrowRight, Menu, PhoneCall, MessageCircle, X, ChevronDown, MapPin, Calculator, Quote, Plus, Minus, Check, Briefcase, Send, Mail, Instagram } from 'lucide-react';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { db } from './firebase';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import SEO from './components/SEO';
+import CookieBanner from './components/CookieBanner';
 
 const Impressum = lazy(() => import('./pages/Impressum'));
 const Datenschutz = lazy(() => import('./pages/Datenschutz'));
 const AGB = lazy(() => import('./pages/AGB'));
 const LocationPage = lazy(() => import('./pages/LocationPage'));
+const Admin = lazy(() => import('./pages/Admin'));
 
 import { getChatResponse } from './services/geminiService';
 
@@ -244,7 +248,7 @@ function Home() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="text-4xl sm:text-5xl md:text-7xl font-serif text-slate-900 max-w-4xl tracking-tight leading-[1.15] sm:leading-[1.1] mb-4 sm:mb-6 drop-shadow-sm px-2"
           >
-            Werterhalt und Pflege mit <span className="italic text-primary-600">höchstem</span> Standard.
+            Schluss mit unzuverlässigen Dienstleistern. Wir pflegen Ihre Immobilie, als wäre es <span className="italic text-primary-600">unsere eigene</span>.
           </motion.h1>
 
           <motion.p 
@@ -253,7 +257,7 @@ function Home() {
             transition={{ duration: 0.5, delay: 0.3 }}
             className="text-base sm:text-lg md:text-xl text-slate-700 max-w-2xl mb-8 sm:mb-10 leading-relaxed font-medium px-4"
           >
-            Die All-in-One Lösung für Ihr Gebäude. Von der Gebäudereinigung über Landschaftsbau bis zum Winterdienst – wir machen es Ihnen einfach.
+            Transparente Preise, 100% Zuverlässigkeit und feste Ansprechpartner für Gebäudereinigung, Gartenpflege und Winterdienst im Raum München.
           </motion.p>
 
           <motion.div 
@@ -262,9 +266,9 @@ function Home() {
             transition={{ duration: 0.5, delay: 0.4 }}
             className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 mb-12 sm:mb-16 w-full sm:w-auto px-4 sm:px-0"
           >
-            <button onClick={() => setIsContactPopupOpen(true)} className="w-full sm:w-auto px-6 py-4 bg-primary-600 hover:bg-primary-700 text-white rounded-full font-medium transition-all hover:shadow-xl hover:shadow-primary-600/20 hover:-translate-y-0.5 flex items-center justify-center gap-2 text-base">
-              Jetzt Angebot einholen
-              <ArrowRight className="w-4 h-4" />
+            <button onClick={() => setIsContactPopupOpen(true)} className="w-full sm:w-auto px-8 py-4 bg-orange-500 hover:bg-orange-600 text-white rounded-full font-bold transition-all hover:shadow-xl hover:shadow-orange-500/30 hover:-translate-y-0.5 flex items-center justify-center gap-2 text-lg">
+              Kostenlose Beratung sichern
+              <ArrowRight className="w-5 h-5" />
             </button>
             <button onClick={() => {
               const element = document.getElementById('leistungen');
@@ -330,6 +334,21 @@ function Home() {
           </div>
         </div>
       </section>
+
+      {/* Trust Bar */}
+      <Reveal>
+        <section className="py-8 bg-slate-50 border-b border-slate-100">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <p className="text-center text-sm font-semibold text-slate-400 uppercase tracking-widest mb-6">Vertraut von über 50+ Unternehmen in der Region</p>
+            <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-50 grayscale">
+              <div className="flex items-center gap-2 font-serif text-xl font-bold"><Building2 className="w-6 h-6"/> ImmoVerwaltung</div>
+              <div className="flex items-center gap-2 font-serif text-xl font-bold"><Briefcase className="w-6 h-6"/> TechPark Süd</div>
+              <div className="flex items-center gap-2 font-serif text-xl font-bold"><Building2 className="w-6 h-6"/> Wohnbau GmbH</div>
+              <div className="flex items-center gap-2 font-serif text-xl font-bold"><Leaf className="w-6 h-6"/> EcoCampus</div>
+            </div>
+          </div>
+        </section>
+      </Reveal>
 
       {/* Stats Section */}
       <Reveal>
@@ -405,6 +424,15 @@ function Home() {
               </motion.div>
             ))}
           </motion.div>
+
+          <Reveal delay={0.4}>
+            <div className="mt-12 text-center">
+              <button onClick={() => setIsContactPopupOpen(true)} className="px-8 py-4 bg-orange-500 hover:bg-orange-600 text-white rounded-full font-bold transition-all hover:shadow-xl hover:shadow-orange-500/30 hover:-translate-y-0.5 inline-flex items-center gap-2">
+                Kostenlose Beratung anfordern
+                <ArrowRight className="w-5 h-5" />
+              </button>
+            </div>
+          </Reveal>
         </div>
       </section>
 
@@ -531,7 +559,7 @@ function Home() {
                   {calculatePrice()} <span className="text-2xl font-sans font-normal text-primary-200">€ / Monat</span>
                 </div>
                 <p className="text-sm text-primary-200 mb-8 relative z-10">*Dies ist ein unverbindlicher Richtwert basierend auf Durchschnittspreisen.</p>
-                <button onClick={() => setIsContactPopupOpen(true)} className="w-full px-6 py-4 bg-white text-slate-900 hover:bg-slate-50 rounded-full font-bold transition-all hover:shadow-lg relative z-10">
+                <button onClick={() => setIsContactPopupOpen(true)} className="w-full px-6 py-4 bg-orange-500 hover:bg-orange-600 text-white rounded-full font-bold transition-all hover:shadow-xl hover:shadow-orange-500/30 relative z-10">
                   Exaktes Angebot anfordern
                 </button>
               </div>
@@ -731,7 +759,7 @@ function Home() {
                           <p className="text-slate-600 mb-6 leading-relaxed"><strong className="text-slate-900">Anforderungen:</strong> {job.reqs}</p>
                           <button 
                             onClick={() => setIsContactPopupOpen(true)}
-                            className="px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-full font-medium transition-all hover:shadow-lg hover:-translate-y-0.5 flex items-center gap-2"
+                            className="px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-full font-bold transition-all hover:shadow-lg hover:shadow-orange-500/30 hover:-translate-y-0.5 flex items-center gap-2"
                           >
                             In 60 Sekunden bewerben
                             <ArrowRight className="w-4 h-4" />
@@ -764,7 +792,7 @@ function Home() {
               <p className="text-primary-50 text-lg md:text-xl mb-10 font-medium">
                 Kontaktieren Sie uns für ein unverbindliches Erstgespräch vor Ort. Wir erstellen ein Konzept, das genau zu Ihren Anforderungen passt.
               </p>
-              <button onClick={() => setIsContactPopupOpen(true)} className="px-8 py-4 bg-white text-primary-900 hover:bg-slate-50 rounded-full font-bold text-lg transition-all hover:shadow-[0_0_40px_rgba(255,255,255,0.3)] hover:-translate-y-1 flex items-center gap-2 mx-auto">
+              <button onClick={() => setIsContactPopupOpen(true)} className="px-8 py-4 bg-orange-500 text-white hover:bg-orange-600 rounded-full font-bold text-lg transition-all hover:shadow-[0_0_40px_rgba(249,115,22,0.4)] hover:-translate-y-1 flex items-center gap-2 mx-auto">
                 <PhoneCall className="w-5 h-5" />
                 Jetzt Kontakt aufnehmen
               </button>
@@ -924,6 +952,107 @@ function Home() {
   );
 }
 
+function RabattPage() {
+  const [leadEmail, setLeadEmail] = useState("");
+  const [showDiscountCode, setShowDiscountCode] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleLeadSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (leadEmail && !isSubmitting) {
+      setIsSubmitting(true);
+      try {
+        await addDoc(collection(db, 'leads'), {
+          email: leadEmail,
+          createdAt: serverTimestamp()
+        });
+        setShowDiscountCode(true);
+      } catch (error) {
+        console.error("Fehler beim Speichern der E-Mail:", error);
+        alert("Es gab einen Fehler. Bitte versuchen Sie es erneut.");
+      } finally {
+        setIsSubmitting(false);
+      }
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-800 selection:bg-blue-100 selection:text-blue-900">
+      <SEO 
+        title="10% Rabatt sichern | Crank Facility Management"
+        description="Sichern Sie sich jetzt 10% Rabatt auf Ihre erste Buchung bei Crank Facility Management."
+        keywords="Rabatt, Gutschein, Gebäudereinigung, Facility Management"
+        url="/rabatt"
+      />
+      <Navbar />
+      
+      <main className="flex-grow flex items-center justify-center pt-24 pb-12 px-4 sm:px-6 relative overflow-hidden">
+        {/* Minimalist Blue Background Elements */}
+        <div className="absolute top-0 right-0 -mt-20 -mr-20 w-72 h-72 bg-blue-200/50 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 -mb-20 -ml-20 w-72 h-72 bg-indigo-200/50 rounded-full blur-3xl"></div>
+        
+        <div className="max-w-md w-full bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 p-8 sm:p-10 relative z-10">
+          <div className="text-center">
+            <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+              <Star className="w-8 h-8 fill-blue-600" />
+            </div>
+            
+            <h1 className="text-3xl font-bold text-slate-900 mb-3 tracking-tight">10% Rabatt</h1>
+            <p className="text-slate-500 mb-8 text-sm leading-relaxed">
+              Tragen Sie Ihre E-Mail ein und erhalten Sie sofort Ihren Gutscheincode.
+            </p>
+            
+            {!showDiscountCode ? (
+              <form onSubmit={handleLeadSubmit} className="flex flex-col gap-4">
+                <div className="relative">
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                  <input 
+                    type="email" 
+                    required
+                    placeholder="E-Mail-Adresse" 
+                    value={leadEmail}
+                    onChange={(e) => setLeadEmail(e.target.value)}
+                    className="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:bg-white transition-all outline-none placeholder:text-slate-400"
+                  />
+                </div>
+                <button 
+                  type="submit" 
+                  disabled={isSubmitting}
+                  className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold text-base transition-all hover:shadow-lg hover:shadow-blue-600/20 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                  {isSubmitting ? 'Wird gespeichert...' : 'Code anzeigen'}
+                  {!isSubmitting && <ArrowRight className="w-4 h-4" />}
+                </button>
+                <p className="text-[11px] text-slate-400 mt-2">
+                  Ihre Daten sind sicher. <Link to="/datenschutz" className="underline hover:text-slate-600">Datenschutz</Link>.
+                </p>
+              </form>
+            ) : (
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                className="bg-blue-50 border border-blue-100 p-6 rounded-2xl"
+              >
+                <p className="text-blue-800 text-sm font-medium mb-2">Ihr persönlicher Code:</p>
+                <div className="text-4xl font-mono font-bold text-blue-600 tracking-widest mb-4 select-all">
+                  CRANK10
+                </div>
+                <p className="text-xs text-blue-700/80 mb-6">
+                  Geben Sie diesen Code bei Ihrer Anfrage an.
+                </p>
+                <Link to="/" className="inline-flex items-center justify-center gap-2 w-full py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-medium transition-all text-sm">
+                  Zur Startseite
+                </Link>
+              </motion.div>
+            )}
+          </div>
+        </div>
+      </main>
+      <Footer />
+    </div>
+  );
+}
+
 export default function App() {
   return (
     <>
@@ -931,13 +1060,16 @@ export default function App() {
       <Suspense fallback={<div className="min-h-screen bg-slate-50 flex items-center justify-center"><div className="w-8 h-8 border-4 border-primary-600 border-t-transparent rounded-full animate-spin"></div></div>}>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/rabatt" element={<RabattPage />} />
           <Route path="/impressum" element={<Impressum />} />
           <Route path="/datenschutz" element={<Datenschutz />} />
           <Route path="/agb" element={<AGB />} />
           <Route path="/standorte/:city" element={<LocationPage />} />
+          <Route path="/admin" element={<Admin />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
+      <CookieBanner />
     </>
   );
 }

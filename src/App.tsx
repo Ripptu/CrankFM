@@ -20,8 +20,6 @@ const AGB = lazy(() => import('./pages/AGB'));
 const LocationPage = lazy(() => import('./pages/LocationPage'));
 const Admin = lazy(() => import('./pages/Admin'));
 
-import { getChatResponse } from './services/geminiService';
-
 function ScrollToTop() {
   const { pathname } = useLocation();
 
@@ -79,13 +77,6 @@ function NotFound() {
 }
 
 function Home() {
-  const [isChatOpen, setIsChatOpen] = useState(false);
-  const [chatMessages, setChatMessages] = useState<{text: string, sender: 'user' | 'bot'}[]>([
-    { text: "Hallo! Wie kann ich Ihnen helfen?", sender: 'bot' }
-  ]);
-  const [chatInput, setChatInput] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
-  const chatEndRef = useRef<HTMLDivElement>(null);
   const [isContactPopupOpen, setIsContactPopupOpen] = useState(false);
 
   const [sqm, setSqm] = useState<number>(500);
@@ -102,30 +93,6 @@ function Home() {
   const toggleCheck = (index: number) => {
     setCheckedItems(prev => prev.includes(index) ? prev.filter(i => i !== index) : [...prev, index]);
   };
-
-  const handleSendMessage = async (e: FormEvent) => {
-    e.preventDefault();
-    if (!chatInput.trim()) return;
-
-    const userMsg = chatInput;
-    const newMessages = [...chatMessages, { text: userMsg, sender: 'user' as const }];
-    setChatMessages(newMessages);
-    setChatInput("");
-    setIsTyping(true);
-
-    try {
-      const botResponse = await getChatResponse(userMsg, chatMessages);
-      setChatMessages(prev => [...prev, { text: botResponse, sender: 'bot' }]);
-    } catch (error) {
-      setChatMessages(prev => [...prev, { text: "Entschuldigung, es gab einen Fehler. Bitte versuchen Sie es später noch einmal.", sender: 'bot' }]);
-    } finally {
-      setIsTyping(false);
-    }
-  };
-
-  useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [chatMessages, isTyping, isChatOpen]);
 
   const currentMonth = new Date().getMonth();
   const baseServices = [
@@ -802,88 +769,6 @@ function Home() {
       </section>
 
       <Footer />
-
-      {/* Live Chat Widget */}
-      <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end md:bottom-6 md:right-6 bottom-24 right-4">
-        <AnimatePresence>
-          {isChatOpen && (
-            <motion.div 
-              initial={{ opacity: 0, y: 20, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 20, scale: 0.95 }}
-              className="mb-4 bg-white rounded-2xl shadow-2xl border border-slate-100 w-80 sm:w-96 overflow-hidden"
-            >
-              <div className="bg-slate-900 p-4 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="relative">
-                    <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center overflow-hidden">
-                      <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="Support" loading="lazy" />
-                    </div>
-                    <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-slate-900 rounded-full"></div>
-                  </div>
-                  <div>
-                    <p className="font-bold text-white text-sm">Felix von Crank</p>
-                    <p className="text-xs text-slate-400">Online • Antwortet sofort</p>
-                  </div>
-                </div>
-                <button onClick={() => setIsChatOpen(false)} className="text-slate-400 hover:text-white">
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-              
-              <div className="h-80 bg-slate-50 p-4 overflow-y-auto flex flex-col gap-3">
-                {chatMessages.map((msg, i) => (
-                  <div key={i} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                    <div className={`max-w-[80%] p-3 rounded-2xl text-sm ${
-                      msg.sender === 'user' 
-                        ? 'bg-primary-600 text-white rounded-br-none' 
-                        : 'bg-white border border-slate-200 text-slate-700 rounded-bl-none shadow-sm'
-                    }`}>
-                      {msg.text}
-                    </div>
-                  </div>
-                ))}
-                {isTyping && (
-                  <div className="flex justify-start">
-                    <div className="bg-white border border-slate-200 p-3 rounded-2xl rounded-bl-none shadow-sm flex gap-1">
-                      <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce"></span>
-                      <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce delay-100"></span>
-                      <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce delay-200"></span>
-                    </div>
-                  </div>
-                )}
-                <div ref={chatEndRef} />
-              </div>
-              
-              <div className="p-3 bg-white border-t border-slate-100">
-                <form onSubmit={handleSendMessage} className="flex gap-2">
-                  <input 
-                    type="text" 
-                    value={chatInput}
-                    onChange={(e) => setChatInput(e.target.value)}
-                    placeholder="Schreiben Sie eine Nachricht..." 
-                    className="flex-1 bg-slate-100 border-0 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary-500 focus:bg-white transition-all"
-                  />
-                  <button 
-                    type="submit"
-                    disabled={!chatInput.trim() || isTyping}
-                    className="bg-primary-600 text-white p-2.5 rounded-xl hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                  >
-                    <Send className="w-4 h-4" />
-                  </button>
-                </form>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-        
-        <button 
-          onClick={() => setIsChatOpen(!isChatOpen)}
-          className="bg-primary-600 hover:bg-primary-700 text-white w-14 h-14 rounded-full shadow-xl flex items-center justify-center transition-all hover:scale-110 active:scale-95"
-        >
-          {isChatOpen ? <X className="w-6 h-6" /> : <MessageCircle className="w-6 h-6" />}
-        </button>
-      </div>
 
       {/* Contact Popup */}
       <AnimatePresence>

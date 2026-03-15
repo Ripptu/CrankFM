@@ -8,6 +8,7 @@ service cloud.firestore {
     // Collection: leads
     // Document ID: auto-generated
     // Fields:
+    //   - name: string (required, max 100 chars)
     //   - email: string (required, valid email)
     //   - createdAt: timestamp (required)
     // ===============================================================
@@ -16,8 +17,13 @@ service cloud.firestore {
       return email is string && email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$") && email.size() < 100;
     }
 
+    function isValidName(name) {
+      return name is string && name.size() > 0 && name.size() < 100;
+    }
+
     function isValidLead(data) {
-      return data.keys().hasOnly(['email', 'createdAt']) &&
+      return data.keys().hasOnly(['name', 'email', 'createdAt']) &&
+             isValidName(data.name) &&
              isValidEmail(data.email) &&
              data.createdAt is timestamp;
     }

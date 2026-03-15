@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 
 interface Lead {
   id: string;
+  name?: string;
   email: string;
   createdAt: any;
 }
@@ -121,6 +122,7 @@ export default function Admin() {
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="bg-slate-50 border-b border-slate-200">
+                    <th className="p-4 font-semibold text-slate-600 text-sm">Name</th>
                     <th className="p-4 font-semibold text-slate-600 text-sm">E-Mail Adresse</th>
                     <th className="p-4 font-semibold text-slate-600 text-sm">Datum</th>
                     <th className="p-4 font-semibold text-slate-600 text-sm text-right">Aktion</th>
@@ -129,6 +131,9 @@ export default function Admin() {
                 <tbody className="divide-y divide-slate-100">
                   {leads.map((lead) => (
                     <tr key={lead.id} className="hover:bg-slate-50/50 transition-colors">
+                      <td className="p-4">
+                        <span className="font-medium text-slate-900">{lead.name || '-'}</span>
+                      </td>
                       <td className="p-4">
                         <div className="flex items-center gap-3">
                           <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">

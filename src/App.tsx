@@ -838,16 +838,18 @@ function Home() {
 }
 
 function RabattPage() {
+  const [leadName, setLeadName] = useState("");
   const [leadEmail, setLeadEmail] = useState("");
   const [showDiscountCode, setShowDiscountCode] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleLeadSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (leadEmail && !isSubmitting) {
+    if (leadEmail && leadName && !isSubmitting) {
       setIsSubmitting(true);
       try {
         await addDoc(collection(db, 'leads'), {
+          name: leadName,
           email: leadEmail,
           createdAt: serverTimestamp()
         });
@@ -889,6 +891,16 @@ function RabattPage() {
             
             {!showDiscountCode ? (
               <form onSubmit={handleLeadSubmit} className="flex flex-col gap-4">
+                <div className="relative">
+                  <input 
+                    type="text" 
+                    required
+                    placeholder="Vorname" 
+                    value={leadName}
+                    onChange={(e) => setLeadName(e.target.value)}
+                    className="w-full px-4 py-4 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:bg-white transition-all outline-none placeholder:text-slate-400"
+                  />
+                </div>
                 <div className="relative">
                   <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                   <input 

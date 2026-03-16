@@ -82,7 +82,7 @@ export default function Admin() {
             />
             <button 
               type="submit"
-              className="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-medium transition-colors"
+              className="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-medium transition-all hover:shadow-lg active:scale-95"
             >
               Einloggen
             </button>

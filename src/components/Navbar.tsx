@@ -95,7 +95,7 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
-          <button onClick={() => scrollToSection('kontakt')} className="hidden md:flex items-center justify-center bg-slate-900 hover:bg-slate-800 text-white text-sm font-medium px-5 py-2.5 rounded-full transition-all hover:shadow-lg hover:-translate-y-0.5 whitespace-nowrap">
+          <button onClick={() => scrollToSection('kontakt')} className="hidden md:flex items-center justify-center bg-slate-900 hover:bg-slate-800 text-white text-sm font-medium px-5 py-2.5 rounded-full transition-all hover:shadow-lg hover:-translate-y-0.5 active:scale-95 whitespace-nowrap">
             Anfrage
           </button>
         </div>

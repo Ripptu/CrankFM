@@ -66,7 +66,7 @@ function NotFound() {
       <div className="w-24 h-24 bg-primary-100 rounded-full flex items-center justify-center mb-8">
         <Wrench className="w-12 h-12 text-primary-600" />
       </div>
-      <h1 className="text-5xl font-serif text-slate-900 mb-4">404</h1>
+      <h1 className="text-5xl font-sans font-bold tracking-tight text-slate-900 mb-4">404</h1>
       <p className="text-xl text-slate-600 mb-8 max-w-md">Hoppla! Hier wurde wohl noch nicht aufgeräumt.</p>
       <Link to="/" className="px-8 py-4 bg-primary-600 hover:bg-primary-700 text-white rounded-full font-medium transition-all hover:shadow-xl hover:-translate-y-0.5 flex items-center gap-2">
         <ArrowRight className="w-5 h-5 rotate-180" />
@@ -213,16 +213,16 @@ function Home() {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-4xl sm:text-5xl md:text-7xl font-serif text-slate-900 max-w-4xl tracking-tight leading-[1.15] sm:leading-[1.1] mb-4 sm:mb-6 drop-shadow-sm px-2"
+            className="text-4xl sm:text-5xl md:text-7xl font-sans font-bold text-slate-900 max-w-4xl tracking-tighter leading-[1.1] sm:leading-[1.05] mb-6 drop-shadow-sm px-2"
           >
-            Schluss mit unzuverlässigen Dienstleistern. Wir pflegen Ihre Immobilie, als wäre es <span className="italic text-primary-600">unsere eigene</span>.
+            Wir pflegen Ihre Immobilie, als wäre es <span className="text-primary-600">unsere eigene</span>.
           </motion.h1>
 
           <motion.p 
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="text-base sm:text-lg md:text-xl text-slate-700 max-w-2xl mb-8 sm:mb-10 leading-relaxed font-medium px-4"
+            className="text-lg sm:text-xl md:text-2xl text-slate-600 max-w-2xl mb-10 leading-relaxed font-medium px-4 tracking-tight"
           >
             Transparente Preise, 100% Zuverlässigkeit und feste Ansprechpartner für Gebäudereinigung, Gartenpflege und Winterdienst im Raum München.
           </motion.p>
@@ -231,9 +231,9 @@ function Home() {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.4 }}
-            className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 mb-12 sm:mb-16 w-full sm:w-auto px-4 sm:px-0"
+            className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 mb-16 w-full sm:w-auto px-4 sm:px-0"
           >
-            <button onClick={() => setIsContactPopupOpen(true)} className="w-full sm:w-auto px-8 py-4 bg-orange-500 hover:bg-orange-600 text-white rounded-full font-bold transition-all hover:shadow-xl hover:shadow-orange-500/30 hover:-translate-y-0.5 flex items-center justify-center gap-2 text-lg">
+            <button onClick={() => setIsContactPopupOpen(true)} className="w-full sm:w-auto px-8 py-4 bg-slate-900 hover:bg-slate-800 text-white rounded-full font-semibold transition-all hover:shadow-lg hover:-translate-y-0.5 flex items-center justify-center gap-2 text-lg active:scale-95">
               Kostenlose Beratung sichern
               <ArrowRight className="w-5 h-5" />
             </button>
@@ -245,7 +245,7 @@ function Home() {
                 const offsetPosition = elementPosition + window.pageYOffset - offset;
                 window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
               }
-            }} className="w-full sm:w-auto px-6 py-4 bg-white/90 backdrop-blur-sm hover:bg-white text-slate-900 border border-slate-200/50 rounded-full font-medium transition-all hover:shadow-md text-base">
+            }} className="w-full sm:w-auto px-8 py-4 bg-white/90 backdrop-blur-md hover:bg-white text-slate-900 border border-slate-200/50 rounded-full font-semibold transition-all hover:shadow-md text-lg active:scale-95">
               Unsere Leistungen
             </button>
           </motion.div>
@@ -308,10 +308,10 @@ function Home() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <p className="text-center text-sm font-semibold text-slate-400 uppercase tracking-widest mb-6">Vertraut von über 50+ Unternehmen in der Region</p>
             <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-50 grayscale">
-              <div className="flex items-center gap-2 font-serif text-xl font-bold"><Building2 className="w-6 h-6"/> ImmoVerwaltung</div>
-              <div className="flex items-center gap-2 font-serif text-xl font-bold"><Briefcase className="w-6 h-6"/> TechPark Süd</div>
-              <div className="flex items-center gap-2 font-serif text-xl font-bold"><Building2 className="w-6 h-6"/> Wohnbau GmbH</div>
-              <div className="flex items-center gap-2 font-serif text-xl font-bold"><Leaf className="w-6 h-6"/> EcoCampus</div>
+              <div className="flex items-center gap-2 font-sans font-bold tracking-tight text-xl"><Building2 className="w-6 h-6"/> ImmoVerwaltung</div>
+              <div className="flex items-center gap-2 font-sans font-bold tracking-tight text-xl"><Briefcase className="w-6 h-6"/> TechPark Süd</div>
+              <div className="flex items-center gap-2 font-sans font-bold tracking-tight text-xl"><Building2 className="w-6 h-6"/> Wohnbau GmbH</div>
+              <div className="flex items-center gap-2 font-sans font-bold tracking-tight text-xl"><Leaf className="w-6 h-6"/> EcoCampus</div>
             </div>
           </div>
         </section>
@@ -323,19 +323,19 @@ function Home() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center divide-y md:divide-y-0 md:divide-x divide-slate-100">
               <div className="py-4">
-                <div className="text-4xl md:text-5xl font-serif font-bold text-primary-600 mb-2">
+                <div className="text-4xl md:text-5xl font-sans font-bold tracking-tight text-primary-600 mb-2">
                   <AnimatedCounter value={15000} suffix="+" />
                 </div>
                 <p className="text-slate-500 font-medium">m² gereinigte Fläche</p>
               </div>
               <div className="py-4">
-                <div className="text-4xl md:text-5xl font-serif font-bold text-primary-600 mb-2">
+                <div className="text-4xl md:text-5xl font-sans font-bold tracking-tight text-primary-600 mb-2">
                   <AnimatedCounter value={50} suffix="+" />
                 </div>
                 <p className="text-slate-500 font-medium">betreute Objekte</p>
               </div>
               <div className="py-4">
-                <div className="text-4xl md:text-5xl font-serif font-bold text-primary-600 mb-2">
+                <div className="text-4xl md:text-5xl font-sans font-bold tracking-tight text-primary-600 mb-2">
                   <AnimatedCounter value={100} suffix="%" />
                 </div>
                 <p className="text-slate-500 font-medium">Zuverlässigkeit</p>
@@ -354,7 +354,7 @@ function Home() {
                 <Star className="w-3.5 h-3.5 text-primary-600 fill-primary-600" />
                 <span className="text-xs font-semibold tracking-wide text-slate-700 uppercase">Unsere Expertise</span>
               </div>
-              <h2 className="text-4xl md:text-5xl font-serif text-slate-900 mb-4">Alles aus einer <span className="italic text-primary-600">Hand</span></h2>
+              <h2 className="text-4xl md:text-5xl font-sans font-bold tracking-tight text-slate-900 mb-4">Alles aus einer <span className="text-primary-600">Hand</span></h2>
               <p className="text-lg text-slate-500 max-w-2xl mx-auto">Maßgeschneiderte Lösungen für den perfekten Zustand Ihrer Immobilie.</p>
             </div>
           </Reveal>
@@ -394,7 +394,7 @@ function Home() {
 
           <Reveal delay={0.4}>
             <div className="mt-12 text-center">
-              <button onClick={() => setIsContactPopupOpen(true)} className="px-8 py-4 bg-orange-500 hover:bg-orange-600 text-white rounded-full font-bold transition-all hover:shadow-xl hover:shadow-orange-500/30 hover:-translate-y-0.5 inline-flex items-center gap-2">
+              <button onClick={() => setIsContactPopupOpen(true)} className="px-8 py-4 bg-slate-900 hover:bg-slate-800 text-white rounded-full font-semibold transition-all hover:shadow-lg hover:-translate-y-0.5 inline-flex items-center gap-2 active:scale-95">
                 Kostenlose Beratung anfordern
                 <ArrowRight className="w-5 h-5" />
               </button>
@@ -425,11 +425,11 @@ function Home() {
                   />
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <span className="text-4xl font-serif font-bold text-slate-900">100%</span>
+                  <span className="text-4xl font-sans font-bold tracking-tight text-slate-900">100%</span>
                   <span className="text-sm font-medium text-slate-500 uppercase tracking-wider mt-1">Sorgenfrei</span>
                 </div>
               </div>
-              <h3 className="text-2xl font-serif text-slate-900 mb-4 relative z-10">Wir übernehmen die komplette Koordination.</h3>
+              <h3 className="text-2xl font-sans font-bold tracking-tight text-slate-900 mb-4 relative z-10">Wir übernehmen die komplette Koordination.</h3>
               <p className="text-slate-600 relative z-10">Sie haben den Kopf frei für Ihr Kerngeschäft. Wir kümmern uns um den Rest.</p>
             </div>
           </Reveal>
@@ -441,7 +441,7 @@ function Home() {
                 <CheckCircle2 className="w-3.5 h-3.5 text-primary-600" />
                 <span className="text-xs font-semibold tracking-wide text-slate-700 uppercase">Transparenz</span>
               </div>
-              <h2 className="text-3xl md:text-4xl font-serif text-slate-900 mb-8">Was umfasst unsere Unterhaltsreinigung?</h2>
+              <h2 className="text-3xl md:text-4xl font-sans font-bold tracking-tight text-slate-900 mb-8">Was umfasst unsere Unterhaltsreinigung?</h2>
               
               <div className="space-y-3">
                 {[
@@ -484,7 +484,7 @@ function Home() {
                   <Calculator className="w-3.5 h-3.5 text-primary-600" />
                   <span className="text-xs font-semibold tracking-wide text-slate-700 uppercase">Preisschätzung</span>
                 </div>
-                <h2 className="text-3xl md:text-4xl font-serif text-slate-900 mb-6">Transparente Kosten für Ihre Planung.</h2>
+                <h2 className="text-3xl md:text-4xl font-sans font-bold tracking-tight text-slate-900 mb-6">Transparente Kosten für Ihre Planung.</h2>
                 <p className="text-slate-500 mb-8 leading-relaxed">Nutzen Sie unseren interaktiven Rechner, um einen ersten Richtwert für Ihre Immobilie zu erhalten. Für ein exaktes Angebot kommen wir gerne kostenlos vorbei.</p>
                 
                 <div className="space-y-6 bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
@@ -522,11 +522,11 @@ function Home() {
               <div className="bg-primary-600 rounded-3xl p-8 md:p-12 text-white text-center relative overflow-hidden shadow-xl">
                 <div className="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
                 <p className="text-primary-100 font-medium mb-2 relative z-10">Geschätzte Kosten ab</p>
-                <div className="text-5xl md:text-6xl font-serif font-bold mb-4 relative z-10">
+                <div className="text-5xl md:text-6xl font-sans font-bold tracking-tight mb-4 relative z-10">
                   {calculatePrice()} <span className="text-2xl font-sans font-normal text-primary-200">€ / Monat</span>
                 </div>
                 <p className="text-sm text-primary-200 mb-8 relative z-10">*Dies ist ein unverbindlicher Richtwert basierend auf Durchschnittspreisen.</p>
-                <button onClick={() => setIsContactPopupOpen(true)} className="w-full px-6 py-4 bg-orange-500 hover:bg-orange-600 text-white rounded-full font-bold transition-all hover:shadow-xl hover:shadow-orange-500/30 relative z-10">
+                <button onClick={() => setIsContactPopupOpen(true)} className="w-full px-6 py-4 bg-white text-slate-900 hover:bg-slate-50 rounded-full font-semibold transition-all hover:shadow-lg relative z-10 active:scale-95">
                   Exaktes Angebot anfordern
                 </button>
               </div>
@@ -545,7 +545,7 @@ function Home() {
                 <Quote className="w-3.5 h-3.5 text-primary-600" />
                 <span className="text-xs font-semibold tracking-wide text-slate-700 uppercase">Kundenstimmen</span>
               </div>
-              <h2 className="text-4xl md:text-5xl font-serif text-slate-900 mb-4">Das sagen unsere <span className="italic text-primary-600">Kunden</span></h2>
+              <h2 className="text-4xl md:text-5xl font-sans font-bold tracking-tight text-slate-900 mb-4">Das sagen unsere <span className="text-primary-600">Kunden</span></h2>
               <a href="https://share.google/LxjfNM24lN9BGlGjz" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-6 py-3 bg-white border border-slate-200 hover:border-primary-500 hover:bg-primary-50 rounded-full font-medium text-slate-700 transition-all shadow-sm">
                 <svg className="w-5 h-5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -604,7 +604,7 @@ function Home() {
                 <MessageCircle className="w-3.5 h-3.5 text-primary-600" />
                 <span className="text-xs font-semibold tracking-wide text-slate-700 uppercase">FAQ</span>
               </div>
-              <h2 className="text-3xl md:text-4xl font-serif text-slate-900 mb-8">Häufig gestellte Fragen</h2>
+              <h2 className="text-3xl md:text-4xl font-sans font-bold tracking-tight text-slate-900 mb-8">Häufig gestellte Fragen</h2>
               
               <div className="space-y-4">
                 {faqs.map((faq, i) => (
@@ -641,7 +641,7 @@ function Home() {
                 <MapPin className="w-3.5 h-3.5 text-primary-600" />
                 <span className="text-xs font-semibold tracking-wide text-slate-700 uppercase">Einsatzgebiet</span>
               </div>
-              <h2 className="text-3xl md:text-4xl font-serif text-slate-900 mb-8">Immer in Ihrer Nähe</h2>
+              <h2 className="text-3xl md:text-4xl font-sans font-bold tracking-tight text-slate-900 mb-8">Immer in Ihrer Nähe</h2>
               
               <div className="bg-white p-2 rounded-3xl border border-slate-200 shadow-sm h-[400px] relative overflow-hidden">
                 <iframe 
@@ -679,7 +679,7 @@ function Home() {
                 <Briefcase className="w-3.5 h-3.5 text-primary-600" />
                 <span className="text-xs font-semibold tracking-wide text-slate-700 uppercase">Karriere</span>
               </div>
-              <h2 className="text-4xl md:text-5xl font-serif text-slate-900 mb-4">Werden Sie Teil unseres <span className="italic text-primary-600">Teams</span></h2>
+              <h2 className="text-4xl md:text-5xl font-sans font-bold tracking-tight text-slate-900 mb-4">Werden Sie Teil unseres <span className="text-primary-600">Teams</span></h2>
               <p className="text-lg text-slate-500">Wir suchen motivierte Mitarbeiter, die mit uns wachsen wollen.</p>
             </div>
 
@@ -726,7 +726,7 @@ function Home() {
                           <p className="text-slate-600 mb-6 leading-relaxed"><strong className="text-slate-900">Anforderungen:</strong> {job.reqs}</p>
                           <button 
                             onClick={() => setIsContactPopupOpen(true)}
-                            className="px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-full font-bold transition-all hover:shadow-lg hover:shadow-orange-500/30 hover:-translate-y-0.5 flex items-center gap-2"
+                            className="px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-full font-semibold transition-all hover:shadow-lg hover:-translate-y-0.5 flex items-center gap-2 active:scale-95"
                           >
                             In 60 Sekunden bewerben
                             <ArrowRight className="w-4 h-4" />
@@ -745,21 +745,21 @@ function Home() {
       {/* Final CTA */}
       <section id="kontakt" className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <Reveal>
-          <div className="relative rounded-[3rem] p-12 md:p-20 text-center overflow-hidden bg-white/10 backdrop-blur-xl border border-white/20 shadow-[0_8px_32px_0_rgba(37,99,235,0.15)]">
-            <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary-500/90 to-primary-700/90"></div>
-            <div className="absolute top-0 left-0 w-full h-full overflow-hidden rounded-[3rem] -z-10">
-              <div className="absolute -top-[50%] -left-[10%] w-[70%] h-[150%] bg-white/20 blur-3xl rounded-full transform rotate-12"></div>
-              <div className="absolute -bottom-[50%] -right-[10%] w-[70%] h-[150%] bg-primary-400/30 blur-3xl rounded-full transform -rotate-12"></div>
+          <div className="relative rounded-[2rem] p-12 md:p-20 text-center overflow-hidden bg-slate-900 shadow-2xl">
+            <div className="absolute inset-0 -z-10 bg-gradient-to-br from-slate-800 to-slate-900"></div>
+            <div className="absolute top-0 left-0 w-full h-full overflow-hidden rounded-[2rem] -z-10">
+              <div className="absolute -top-[50%] -left-[10%] w-[70%] h-[150%] bg-primary-500/20 blur-3xl rounded-full transform rotate-12"></div>
+              <div className="absolute -bottom-[50%] -right-[10%] w-[70%] h-[150%] bg-blue-500/20 blur-3xl rounded-full transform -rotate-12"></div>
             </div>
             
             <div className="relative z-10 max-w-3xl mx-auto">
-              <h2 className="text-4xl md:text-6xl font-serif text-white mb-6 drop-shadow-sm">
-                Bereit für eine <span className="italic">sorgenfreie</span> Immobilie?
+              <h2 className="text-4xl md:text-6xl font-sans font-bold tracking-tight text-white mb-6 drop-shadow-sm">
+                Bereit für eine sorgenfreie Immobilie?
               </h2>
-              <p className="text-primary-50 text-lg md:text-xl mb-10 font-medium">
+              <p className="text-slate-300 text-lg md:text-xl mb-10 font-medium tracking-tight">
                 Kontaktieren Sie uns für ein unverbindliches Erstgespräch vor Ort. Wir erstellen ein Konzept, das genau zu Ihren Anforderungen passt.
               </p>
-              <button onClick={() => setIsContactPopupOpen(true)} className="px-8 py-4 bg-orange-500 text-white hover:bg-orange-600 rounded-full font-bold text-lg transition-all hover:shadow-[0_0_40px_rgba(249,115,22,0.4)] hover:-translate-y-1 flex items-center gap-2 mx-auto">
+              <button onClick={() => setIsContactPopupOpen(true)} className="px-8 py-4 bg-white text-slate-900 hover:bg-slate-50 rounded-full font-semibold text-lg transition-all hover:shadow-lg hover:-translate-y-0.5 flex items-center gap-2 mx-auto active:scale-95">
                 <PhoneCall className="w-5 h-5" />
                 Jetzt Kontakt aufnehmen
               </button>
@@ -790,7 +790,7 @@ function Home() {
               <button onClick={() => setIsContactPopupOpen(false)} className="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
                 <X className="w-6 h-6" />
               </button>
-              <h3 className="text-2xl font-serif text-slate-900 mb-6 text-center">Wie möchten Sie uns kontaktieren?</h3>
+              <h3 className="text-2xl font-sans font-bold tracking-tight text-slate-900 mb-6 text-center">Wie möchten Sie uns kontaktieren?</h3>
               <div className="flex flex-col gap-3">
                 <a href="tel:01629570163" className="flex items-center gap-4 p-4 rounded-2xl border border-slate-200 hover:border-primary-500 hover:bg-primary-50 transition-all group">
                   <div className="w-12 h-12 bg-primary-100 text-primary-600 rounded-full flex items-center justify-center group-hover:bg-primary-600 group-hover:text-white transition-colors">
@@ -884,9 +884,9 @@ function RabattPage() {
               <Star className="w-8 h-8 fill-blue-600" />
             </div>
             
-            <h1 className="text-3xl font-bold text-slate-900 mb-3 tracking-tight">10% Rabatt</h1>
+            <h1 className="text-3xl font-sans font-bold text-slate-900 mb-3 tracking-tight">10% Rabatt sichern</h1>
             <p className="text-slate-500 mb-8 text-sm leading-relaxed">
-              Tragen Sie Ihre E-Mail ein und erhalten Sie sofort Ihren Gutscheincode.
+              Tragen Sie Ihren Vornamen und Ihre E-Mail ein, um sofort Ihren exklusiven Gutscheincode zu erhalten.
             </p>
             
             {!showDiscountCode ? (
@@ -915,7 +915,7 @@ function RabattPage() {
                 <button 
                   type="submit" 
                   disabled={isSubmitting}
-                  className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold text-base transition-all hover:shadow-lg hover:shadow-blue-600/20 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-semibold text-base transition-all hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 active:scale-95"
                 >
                   {isSubmitting ? 'Wird gespeichert...' : 'Code anzeigen'}
                   {!isSubmitting && <ArrowRight className="w-4 h-4" />}

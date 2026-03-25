@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { collection, onSnapshot, deleteDoc, doc, query, orderBy } from 'firebase/firestore';
 import { db } from '../firebase';
-import { Trash2, Mail, Calendar, ArrowLeft } from 'lucide-react';
+import { Trash2, Mail, Calendar, ArrowLeft, X, AlertCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { motion, AnimatePresence } from 'motion/react';
 
 interface Lead {
   id: string;
@@ -18,6 +19,43 @@ export default function Admin() {
   const [password, setPassword] = useState('');
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
+  
+  // Custom Modal State
+  const [modalState, setModalState] = useState<{
+    isOpen: boolean;
+    type: 'alert' | 'confirm';
+    title: string;
+    message: string;
+    onConfirm?: () => void;
+  }>({
+    isOpen: false,
+    type: 'alert',
+    title: '',
+    message: ''
+  });
+
+  const showAlert = (title: string, message: string) => {
+    setModalState({
+      isOpen: true,
+      type: 'alert',
+      title,
+      message
+    });
+  };
+
+  const showConfirm = (title: string, message: string, onConfirm: () => void) => {
+    setModalState({
+      isOpen: true,
+      type: 'confirm',
+      title,
+      message,
+      onConfirm
+    });
+  };
+
+  const closeModal = () => {
+    setModalState(prev => ({ ...prev, isOpen: false }));
+  };
 
   useEffect(() => {
     if (!isAuthenticated) return;
@@ -45,26 +83,31 @@ export default function Admin() {
       setIsAuthenticated(true);
       sessionStorage.setItem('adminAuth', 'true');
     } else {
-      alert('Falsches Passwort');
+      showAlert('Fehler', 'Falsches Passwort');
       setPassword('');
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (window.confirm('Möchten Sie diese E-Mail-Adresse wirklich löschen?')) {
-      try {
-        await deleteDoc(doc(db, 'leads', id));
-      } catch (error) {
-        console.error("Error deleting lead:", error);
-        alert("Fehler beim Löschen.");
+  const handleDelete = (id: string) => {
+    showConfirm(
+      'Lead löschen',
+      'Möchten Sie diesen Lead wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.',
+      async () => {
+        try {
+          await deleteDoc(doc(db, 'leads', id));
+          closeModal();
+        } catch (error) {
+          console.error("Error deleting lead:", error);
+          showAlert('Fehler', 'Fehler beim Löschen des Leads.');
+        }
       }
-    }
+    );
   };
 
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 font-sans">
-        <div className="max-w-md w-full bg-white rounded-3xl shadow-sm border border-slate-200 p-8 text-center">
+        <div className="max-w-md w-full bg-white rounded-3xl shadow-sm border border-slate-200 p-8 text-center relative">
           <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
             <Mail className="w-8 h-8 text-slate-600" />
           </div>
@@ -94,6 +137,41 @@ export default function Admin() {
             </Link>
           </div>
         </div>
+
+        {/* Modal for Login Alerts */}
+        <AnimatePresence>
+          {modalState.isOpen && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={closeModal}
+                className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
+              />
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                className="relative bg-white rounded-2xl shadow-xl w-full max-w-sm overflow-hidden"
+              >
+                <div className="p-6 text-center">
+                  <div className="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto mb-4">
+                    <AlertCircle className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-lg font-bold text-slate-900 mb-2">{modalState.title}</h3>
+                  <p className="text-slate-600 mb-6">{modalState.message}</p>
+                  <button 
+                    onClick={closeModal}
+                    className="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-medium transition-colors"
+                  >
+                    Verstanden
+                  </button>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
       </div>
     );
   }
@@ -165,6 +243,59 @@ export default function Admin() {
           )}
         </div>
       </div>
+
+      {/* Global Modal */}
+      <AnimatePresence>
+        {modalState.isOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={closeModal}
+              className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative bg-white rounded-2xl shadow-xl w-full max-w-sm overflow-hidden"
+            >
+              <div className="p-6 text-center">
+                <div className={`w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 ${modalState.type === 'confirm' ? 'bg-orange-100 text-orange-600' : 'bg-red-100 text-red-600'}`}>
+                  <AlertCircle className="w-6 h-6" />
+                </div>
+                <h3 className="text-lg font-bold text-slate-900 mb-2">{modalState.title}</h3>
+                <p className="text-slate-600 mb-6">{modalState.message}</p>
+                
+                {modalState.type === 'confirm' ? (
+                  <div className="flex gap-3">
+                    <button 
+                      onClick={closeModal}
+                      className="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-medium transition-colors"
+                    >
+                      Abbrechen
+                    </button>
+                    <button 
+                      onClick={modalState.onConfirm}
+                      className="flex-1 py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl font-medium transition-colors"
+                    >
+                      Löschen
+                    </button>
+                  </div>
+                ) : (
+                  <button 
+                    onClick={closeModal}
+                    className="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-medium transition-colors"
+                  >
+                    Verstanden
+                  </button>
+                )}
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

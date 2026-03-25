@@ -4,7 +4,7 @@ import SEO from '../components/SEO';
 
 export default function AGB() {
   return (
-    <div className="min-h-screen bg-slate-50 pt-32 pb-20 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-slate-900 pt-32 pb-20 px-4 sm:px-6 lg:px-8">
       <SEO 
         title="AGB | Crank Facility Management"
         description="Allgemeine Geschäftsbedingungen von Crank Facility Management."

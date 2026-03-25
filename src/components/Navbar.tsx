@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, useScroll, useMotionValueEvent } from 'motion/react';
-import { Building2, Menu, X } from 'lucide-react';
+import { Building2, Menu, X, PhoneCall } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 export default function Navbar() {
@@ -47,13 +47,7 @@ export default function Navbar() {
     
     if (newCount === 5) {
       setClickCount(0);
-      const password = prompt("Passwort eingeben:");
-      if (password === "vamela") {
-        sessionStorage.setItem('adminAuth', 'true');
-        window.location.href = "/admin";
-      } else {
-        alert("Falsches Passwort");
-      }
+      window.location.href = "/admin";
     } else {
       if (isHome) {
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -68,62 +62,65 @@ export default function Navbar() {
       initial={{ y: 0 }}
       animate={{ y: isVisible ? 0 : -150 }}
       transition={{ duration: 0.3, ease: "easeInOut" }}
-      className="fixed top-6 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none"
+      className={`fixed top-0 left-0 right-0 z-50 flex justify-center transition-all duration-300 ${
+        isScrolled 
+          ? 'bg-white shadow-lg py-2' 
+          : 'bg-transparent py-4'
+      }`}
     >
-      <motion.div 
-        layout
-        initial={{ width: "90%", maxWidth: "1024px", borderRadius: "9999px" }}
-        animate={{ 
-          width: isScrolled ? "auto" : "90%",
-          maxWidth: isScrolled ? "fit-content" : "1024px",
-          padding: isScrolled ? "0.75rem 1.5rem" : "0.75rem 1.5rem",
-          backgroundColor: isScrolled ? "rgba(255, 255, 255, 0.9)" : "rgba(255, 255, 255, 0.8)"
-        }}
-        transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        className="pointer-events-auto backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 hidden md:flex items-center justify-between gap-8"
-      >
+      <div className="w-full max-w-[1400px] px-4 sm:px-6 lg:px-8 flex items-center justify-between h-20">
+        {/* Logo */}
         <a href="/" onClick={handleLogoClick} className="flex items-center gap-2 shrink-0">
-          <img src="https://s1.directupload.eu/images/260224/kgemdfqa.png" alt="Crank Facility Management" className="h-10 w-auto object-contain hidden md:block" width="150" height="40" loading="eager" fetchPriority="high" />
+          <img src="https://s1.directupload.eu/images/260325/syt3moyl.webp" alt="CRANK Logo" className={`h-10 w-auto transition-all duration-300 ${isScrolled ? 'brightness-0' : ''}`} />
         </a>
         
-        <div className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600 whitespace-nowrap">
-          <button onClick={() => scrollToSection('leistungen')} className="hover:text-primary-600 transition-colors">Leistungen</button>
-          <button onClick={() => scrollToSection('preise')} className="hover:text-primary-600 transition-colors">Preise</button>
-          <button onClick={() => scrollToSection('karriere')} className="hover:text-primary-600 transition-colors">Karriere</button>
-          <button onClick={() => scrollToSection('faq')} className="hover:text-primary-600 transition-colors">FAQ</button>
-          <button onClick={() => scrollToSection('kontakt')} className="hover:text-primary-600 transition-colors">Kontakt</button>
+        {/* Center Links */}
+        <div className={`hidden lg:flex items-center gap-8 text-sm font-semibold uppercase tracking-wider transition-colors duration-300 ${isScrolled ? 'text-slate-900' : 'text-white'}`}>
+          <Link to="/" className={`hover:text-primary-600 transition-colors ${isHome ? 'text-primary-600' : ''}`}>Home</Link>
+          <Link to="/leistungen" className={`hover:text-primary-600 transition-colors ${location.pathname === '/leistungen' ? 'text-primary-600' : ''}`}>Leistungen</Link>
+          <Link to="/referenzen" className={`hover:text-primary-600 transition-colors ${location.pathname === '/referenzen' ? 'text-primary-600' : ''}`}>Referenzen</Link>
+          <Link to="/karriere" className={`hover:text-primary-600 transition-colors ${location.pathname === '/karriere' ? 'text-primary-600' : ''}`}>Karriere</Link>
+          <Link to="/kontakt" className={`hover:text-primary-600 transition-colors ${location.pathname === '/kontakt' ? 'text-primary-600' : ''}`}>Kontakt</Link>
         </div>
 
-        <div className="flex items-center gap-2 shrink-0">
-          <button onClick={() => scrollToSection('kontakt')} className="hidden md:flex items-center justify-center bg-slate-900 hover:bg-slate-800 text-white text-sm font-medium px-5 py-2.5 rounded-full transition-all hover:shadow-lg hover:-translate-y-0.5 active:scale-95 whitespace-nowrap">
-            Anfrage
-          </button>
+        {/* Right Section */}
+        <div className="hidden md:flex items-center gap-6 shrink-0">
+          <div className="flex items-center gap-3">
+            <div className={`text-sm font-bold transition-colors duration-300 ${isScrolled ? 'text-slate-900' : 'text-white'}`}>
+              Tel: +49 30 1234567
+            </div>
+          </div>
+          <Link to="/kontakt" className="bg-primary-600 hover:bg-primary-700 text-white text-sm font-bold uppercase tracking-wider px-6 py-3 transition-colors rounded-lg">
+            Kontakt
+          </Link>
         </div>
-      </motion.div>
 
-      {/* Mobile Hamburger Button (Fixed top right) */}
-      <button 
-        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        className="md:hidden fixed top-6 right-6 z-[60] text-slate-900 w-12 h-12 bg-white/90 backdrop-blur-md shadow-lg border border-slate-100 flex items-center justify-center rounded-full hover:bg-slate-50 transition-colors pointer-events-auto"
-      >
-        {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-      </button>
+        {/* Mobile Hamburger Button */}
+        <button 
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          className={`lg:hidden w-10 h-10 flex items-center justify-center transition-colors rounded-lg ${isScrolled ? 'text-slate-900 hover:bg-slate-100' : 'text-white hover:bg-white/10'}`}
+        >
+          {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </button>
+      </div>
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <motion.div 
-          initial={{ opacity: 0, y: -20, scale: 0.95 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: -20, scale: 0.95 }}
-          className="fixed top-24 left-4 right-4 bg-white rounded-3xl shadow-2xl p-6 pointer-events-auto md:hidden border border-slate-100 z-[55]"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          className="absolute top-20 left-0 right-0 bg-white shadow-xl border-t border-slate-100 lg:hidden z-[55]"
         >
-          <div className="flex flex-col gap-4 text-center font-medium text-slate-600">
-            <button onClick={() => scrollToSection('leistungen')} className="py-2 hover:text-primary-600">Leistungen</button>
-            <button onClick={() => scrollToSection('preise')} className="py-2 hover:text-primary-600">Preise</button>
-            <button onClick={() => scrollToSection('karriere')} className="py-2 hover:text-primary-600">Karriere</button>
-            <button onClick={() => scrollToSection('faq')} className="py-2 hover:text-primary-600">FAQ</button>
-            <button onClick={() => scrollToSection('kontakt')} className="py-2 hover:text-primary-600">Kontakt</button>
-            <button onClick={() => scrollToSection('kontakt')} className="bg-primary-600 text-white py-3 rounded-xl mt-2">Kostenlose Anfrage</button>
+          <div className="flex flex-col p-4 text-sm font-bold text-slate-700 uppercase tracking-wider divide-y divide-slate-100">
+            <Link to="/" onClick={() => setIsMobileMenuOpen(false)} className="py-4 hover:text-primary-600">Home</Link>
+            <Link to="/leistungen" onClick={() => setIsMobileMenuOpen(false)} className="py-4 hover:text-primary-600">Leistungen</Link>
+            <Link to="/referenzen" onClick={() => setIsMobileMenuOpen(false)} className="py-4 hover:text-primary-600">Referenzen</Link>
+            <Link to="/karriere" onClick={() => setIsMobileMenuOpen(false)} className="py-4 hover:text-primary-600">Karriere</Link>
+            <Link to="/kontakt" onClick={() => setIsMobileMenuOpen(false)} className="py-4 hover:text-primary-600">Kontakt</Link>
+            <div className="pt-4 pb-2">
+              <Link to="/kontakt" onClick={() => setIsMobileMenuOpen(false)} className="block text-center bg-primary-600 text-white py-3 font-bold rounded-lg">Angebot einholen</Link>
+            </div>
           </div>
         </motion.div>
       )}

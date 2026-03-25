@@ -11,14 +11,13 @@ export default function LocationPage() {
     : '';
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-900">
       <SEO 
         title={`Gebäudereinigung & Hausmeisterservice in ${formattedCity} | Crank Facility Management`}
         description={`Ihr zuverlässiger Partner für Gebäudereinigung, Hausmeisterservice und Winterdienst in ${formattedCity}. Fordern Sie jetzt ein kostenloses Angebot an!`}
         keywords={`Gebäudereinigung ${formattedCity}, Hausmeisterservice ${formattedCity}, Facility Management ${formattedCity}, Winterdienst ${formattedCity}, Gartenpflege ${formattedCity}`}
         url={`/standorte/${city}`}
       />
-      <Navbar />
       
       <div className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <Link to="/" className="inline-flex items-center gap-2 text-primary-600 hover:text-primary-700 font-medium mb-8 transition-colors">
@@ -59,7 +58,6 @@ export default function LocationPage() {
           </a>
         </div>
       </div>
-      <Footer />
     </div>
   );
 }
